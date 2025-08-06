@@ -13,8 +13,6 @@ export default function rapy(whatsapp: Whatsapp) {
   let recentMessageTimes: number[] = [];
 
   whatsapp.registerMessageHandler(async (sessionId, msg, type, senderInfo) => {
-    console.log("Nova mensagem recebida :", type, msg);
-
     if (type !== "text") return;
     const content = msg.message?.conversation || msg.message?.extendedTextMessage?.text;
     if (!content || !senderInfo) return;
