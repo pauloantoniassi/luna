@@ -44,12 +44,18 @@ export default function rapy(whatsapp: Whatsapp) {
 
     if (isGenerating) return;
 
-    if (messages.length > 100) {
-      const summary = await generateSummary(db.getAll(), messages);
-      db.set("summary", summary.summary);
-      db.set("opinions", summary.opinions);
-      db.save();
-      messages = [];
+    if (messages.length > 10) {
+      debounce(
+        async () => {
+          const summary = await generateSummary(db.getAll(), messages);
+          db.set("summary", summary.summary);
+          db.set("opinions", summary.opinions);
+          db.save();
+          messages = [];
+        },
+        1000 * 60 * 5,
+        "debounce-summary"
+      );
     }
 
     const isRapyMentioned = content.toLowerCase().includes("rapy");
@@ -146,7 +152,7 @@ export default function rapy(whatsapp: Whatsapp) {
           debounceTime / 1000
         }s`
       );
-      debounce(processResponse, debounceTime);
+      debounce(processResponse, debounceTime, "debounce-response");
     }
   });
 }

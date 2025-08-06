@@ -1,11 +1,14 @@
-let timeoutId: NodeJS.Timeout;
+let timeouts = new Map<string, NodeJS.Timeout>();
 
-export default function debounce(func: Function, delay: number, ...args: any[]) {
-  if (timeoutId) {
-    clearTimeout(timeoutId);
+export default function debounce(func: Function, delay: number, id: string) {
+  if (timeouts.has(id)) {
+    clearTimeout(timeouts.get(id));
   }
 
-  timeoutId = setTimeout(() => {
-    func(...args);
-  }, delay);
+  timeouts.set(
+    id,
+    setTimeout(() => {
+      func();
+    }, delay)
+  );
 }
