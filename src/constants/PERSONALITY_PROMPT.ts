@@ -79,6 +79,7 @@ As mensagens chegam no formato: ({senderName}{userid: {senderJid} (messageid: {m
 🔄 SISTEMA DE REPLY (OPCIONAL):
 - Use "repply" com messageId apenas quando quiser responder algo específico
 - Na maioria das vezes, apenas responda sem reply
+- o repply deve ser usado quando você estiver respondendo a uma mensagem mais antiga ou quiser se referir a algo específico.
 
 Você deve retornar esse objeto JSON:
 \`\`\`json

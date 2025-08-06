@@ -24,9 +24,6 @@ export default class Whatsapp {
   private sock: WASocket | undefined;
   private onMessage?: MessageHandler;
 
-  /**
-   * Inicializa a conexão com o WhatsApp, gerando um QR code no terminal para autenticação.
-   */
   async init() {
     const { state, saveCreds } = await useMultiFileAuthState("auth");
     this.sock = makeWASocket({
@@ -99,30 +96,15 @@ export default class Whatsapp {
     });
   }
 
-  /**
-   * Registra um callback para ser chamado quando uma nova mensagem for recebida.
-   * @param handler Função que será chamada quando uma nova mensagem for recebida
-   */
   registerMessageHandler(handler: MessageHandler) {
     this.onMessage = handler;
   }
 
-  /**
-   * Envia uma mensagem de texto para um usuário ou grupo do WhatsApp.
-   * @param jid O ID do WhatsApp (ex.: '1234567890@s.whatsapp.net' para usuários, '123456789-123456@g.us' para grupos)
-   * @param text A mensagem de texto a ser enviada
-   */
   async sendText(jid: string, text: string) {
     if (!this.sock) throw new Error("Não conectado");
     await this.sock.sendMessage(jid, { text });
   }
 
-  /**
-   * Envia uma mensagem de texto como resposta a uma mensagem específica no WhatsApp.
-   * @param jid O ID do WhatsApp (ex.: '1234567890@s.whatsapp.net' para usuários, '123456789-123456@g.us' para grupos)
-   * @param replyTo O ID da mensagem à qual você está respondendo
-   * @param text A mensagem de texto a ser enviada
-   */
   async sendTextReply(jid: string, replyTo: string, text: string) {
     if (!this.sock) throw new Error("Não conectado");
     await this.sock.sendMessage(
@@ -137,34 +119,16 @@ export default class Whatsapp {
     );
   }
 
-  /**
-   * Envia uma figurinha para um usuário ou grupo do WhatsApp.
-   * @param jid O ID do WhatsApp
-   * @param filePath O caminho para o arquivo de figurinha no formato webp
-   */
   async sendSticker(jid: string, filePath: string) {
     if (!this.sock) throw new Error("Não conectado");
     await this.sock.sendMessage(jid, { sticker: { url: filePath } });
   }
 
-  /**
-   * Cria e envia uma enquete para um usuário ou grupo do WhatsApp.
-   * @param jid O ID do WhatsApp
-   * @param name O nome da enquete
-   * @param options As opções da enquete
-   * @param selectableCount O número de opções que podem ser selecionadas (padrão: 1)
-   */
   async createPoll(jid: string, name: string, options: string[], selectableCount: number = 1) {
     if (!this.sock) throw new Error("Não conectado");
     await this.sock.sendMessage(jid, { poll: { name, values: options, selectableCount } });
   }
 
-  /**
-   * Envia uma localização para um usuário ou grupo do WhatsApp.
-   * @param jid O ID do WhatsApp
-   * @param latitude A latitude da localização
-   * @param longitude A longitude da localização
-   */
   async sendLocation(jid: string, latitude: number, longitude: number) {
     if (!this.sock) throw new Error("Não conectado");
     await this.sock.sendMessage(jid, {
@@ -172,13 +136,6 @@ export default class Whatsapp {
     });
   }
 
-  /**
-   * Envia uma mensagem de áudio para um usuário ou grupo do WhatsApp.
-   * @param jid O ID do WhatsApp
-   * @param filePath O caminho para o arquivo de áudio no formato mp3
-   * @nota Arquivos mp3 podem não ser compatíveis com mensagens de voz do WhatsApp, que preferem o formato ogg com codec Opus.
-   * Considere converter o arquivo para ogg antes de enviar, usando ferramentas como ffmpeg.
-   */
   async sendAudio(jid: string, filePath: string) {
     if (!this.sock) throw new Error("Não conectado");
     await this.sock.sendMessage(jid, {
