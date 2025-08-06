@@ -10,7 +10,7 @@
     "type": "git",
     "url": "git+https://github.com/oKauaDev/rapy.git"
   },
-  "license": "ISC",
+  "license": "MIT",
   "author": "kaua.dev.br",
   "type": "commonjs",
   "main": "index.js",
