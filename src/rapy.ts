@@ -10,7 +10,6 @@ let messages: Message = [];
 export default function rapy(whatsapp: Whatsapp) {
   const db = database();
   let isGenerating = false;
-  let lastMessageTime = 0;
   let recentMessageTimes: number[] = [];
 
   whatsapp.registerMessageHandler(async (sessionId, msg, type, senderInfo) => {
