@@ -14,7 +14,7 @@ const DataSchema = z.object({
   ),
 });
 
-type Data = z.infer<typeof DataSchema>;
+export type Data = z.infer<typeof DataSchema>;
 
 export default function database() {
   const file = path.join(__dirname, "..", "..", "database", "data.json");

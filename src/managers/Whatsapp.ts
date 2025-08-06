@@ -118,6 +118,26 @@ export default class Whatsapp {
   }
 
   /**
+   * Envia uma mensagem de texto como resposta a uma mensagem específica no WhatsApp.
+   * @param jid O ID do WhatsApp (ex.: '1234567890@s.whatsapp.net' para usuários, '123456789-123456@g.us' para grupos)
+   * @param replyTo O ID da mensagem à qual você está respondendo
+   * @param text A mensagem de texto a ser enviada
+   */
+  async sendTextReply(jid: string, replyTo: string, text: string) {
+    if (!this.sock) throw new Error("Não conectado");
+    await this.sock.sendMessage(
+      jid,
+      { text },
+      {
+        quoted: {
+          key: { id: replyTo, remoteJid: jid },
+          message: {},
+        },
+      }
+    );
+  }
+
+  /**
    * Envia uma figurinha para um usuário ou grupo do WhatsApp.
    * @param jid O ID do WhatsApp
    * @param filePath O caminho para o arquivo de figurinha no formato webp
