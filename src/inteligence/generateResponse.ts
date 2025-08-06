@@ -16,6 +16,7 @@ export type ResponseAction = {
     text: string;
   };
   sticker?: string;
+  audio?: string;
   poll?: {
     question: string;
     options: [string, string, string];
@@ -27,12 +28,13 @@ export type ResponseAction = {
 };
 
 type ApiResponseAction = {
-  type: "message" | "sticker" | "poll" | "location";
+  type: "message" | "sticker" | "audio" | "poll" | "location";
   message?: {
     repply?: string; // Opcional novamente
     text: string;
   };
   sticker?: string;
+  audio?: string;
   poll?: {
     question: string;
     options: [string, string, string];
@@ -122,6 +124,40 @@ export default async function generateResponse(
     "suspeito.webp",
   ];
 
+  const audioOptions = [
+    "BOOMBAMBOP.mp3",
+    "BRUH.mp3",
+    "DING.mp3",
+    "FBI OPEN UP.mp3",
+    "HA!GOTEE!HA!.mp3",
+    "Hello There.mp3",
+    "Hi How Are Ya.mp3",
+    "HUH.mp3",
+    "INCEPTION.mp3",
+    "MEANWHILE.mp3",
+    "Metal Boom.mp3",
+    "MINECRAFT OOF.mp3",
+    "MY LEG.mp3",
+    "NO GOD PLEASE NO.mp3",
+    "NOPE.mp3",
+    "OH NO NO NO.mp3",
+    "OH!!!!!!!.mp3",
+    "RIMSHOT.mp3",
+    "Sadness-1.mp3",
+    "Sadness-2.mp3",
+    "Sadness-3.mp3",
+    "SHREK-SWAMP.mp3",
+    "TACTICAL NUKE.mp3",
+    "TBC.mp3",
+    "The Screaming Sheep.mp3",
+    "Titanic-Paroday.mp3",
+    "Wait a minute....mp3",
+    "WINDOWS-ERROR.mp3",
+    "WINDOWS-STARTUP.mp3",
+    "WOW.mp3",
+    "YEET.mp3",
+  ];
+
   const responseSchema = {
     type: "json_schema" as const,
     json_schema: {
@@ -138,7 +174,7 @@ export default async function generateResponse(
               properties: {
                 type: {
                   type: "string",
-                  enum: ["message", "sticker", "poll", "location"],
+                  enum: ["message", "sticker", "audio", "poll", "location"],
                   description: "Tipo da ação",
                 },
                 message: {
@@ -161,6 +197,11 @@ export default async function generateResponse(
                   type: "string",
                   enum: stickerOptions,
                   description: "Nome do arquivo de sticker da lista disponível",
+                },
+                audio: {
+                  type: "string",
+                  enum: audioOptions,
+                  description: "Nome do arquivo de áudio da lista disponível",
                 },
                 poll: {
                   type: "object",
@@ -240,6 +281,8 @@ export default async function generateResponse(
         result.message = action.message;
       } else if (action.type === "sticker" && action.sticker) {
         result.sticker = action.sticker;
+      } else if (action.type === "audio" && action.audio) {
+        result.audio = action.audio;
       } else if (action.type === "poll" && action.poll) {
         result.poll = action.poll;
       } else if (action.type === "location" && action.location) {

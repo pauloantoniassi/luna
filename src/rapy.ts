@@ -110,6 +110,15 @@ export default function rapy(whatsapp: Whatsapp) {
               jid: "",
               ia: true,
             });
+          } else if (action.audio) {
+            const audioPath = path.join(__dirname, "..", "audios", action.audio);
+            await whatsapp.sendAudio(sessionId, audioPath);
+            messages.push({
+              content: `(Rapy): <enviou o áudio ${action.audio}>`,
+              name: "Rapy",
+              jid: "",
+              ia: true,
+            });
           } else if (action.poll) {
             await whatsapp.createPoll(sessionId, action.poll.question, action.poll.options);
             messages.push({
