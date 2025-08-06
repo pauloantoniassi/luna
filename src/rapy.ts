@@ -77,6 +77,7 @@ export default function rapy(whatsapp: Whatsapp) {
     const processResponse = async () => {
       isGenerating = true;
       try {
+        whatsapp.setTyping(sessionId);
         const response = await generateResponse(db.getAll(), messages);
         if (response.length === 0) return;
         for (const action of response) {
@@ -136,6 +137,7 @@ export default function rapy(whatsapp: Whatsapp) {
       } catch (error) {
         console.error("Erro ao gerar resposta:", error);
       } finally {
+        whatsapp.setOnline(sessionId);
         isGenerating = false;
       }
     };

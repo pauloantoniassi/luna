@@ -5,6 +5,7 @@ import {
   WASocket,
   WAMessageContent,
   proto,
+  WAPresence,
 } from "@whiskeysockets/baileys";
 import { Boom } from "@hapi/boom";
 import qrcode from "qrcode-terminal";
@@ -143,5 +144,27 @@ export default class Whatsapp {
       ptt: true,
       mimetype: "audio/mpeg",
     });
+  }
+
+  private async updatePresence(to: string, presence: WAPresence) {
+    if (!this.sock) throw new Error("Não conectado");
+
+    await this.sock.sendPresenceUpdate(presence, to);
+  }
+
+  async setOnline(to: string) {
+    await this.updatePresence(to, "available");
+  }
+
+  async setOffline(to: string) {
+    await this.updatePresence(to, "unavailable");
+  }
+
+  async setTyping(to: string) {
+    await this.updatePresence(to, "composing");
+  }
+
+  async pauseTyping(to: string) {
+    await this.updatePresence(to, "paused");
   }
 }
