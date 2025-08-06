@@ -132,6 +132,10 @@ npm run dev    # Executa em modo desenvolvimento com hot reload
 npm start    # Executar em modo produção
 ```
 
+```bash
+npm run format:stickers    # Converter os stickers para o formato correto.
+```
+
 ### Estrutura do Código
 
 - `index.ts` - Ponto de entrada da aplicação
