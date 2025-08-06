@@ -2,6 +2,7 @@ import { ChatCompletionMessageParam } from "openai/resources";
 import openai from "../services/openai";
 import { Data } from "../utils/database";
 import PERSONALITY_PROMPT from "../constants/PERSONALITY_PROMPT";
+import { encoding_for_model } from "tiktoken";
 
 export type Message = {
   content: string;
@@ -47,35 +48,41 @@ type ApiResponseAction = {
 
 export type BotResponse = ResponseAction[];
 
+export type GenerateResponseResult = {
+  actions: BotResponse;
+  cost: {
+    inputTokens: number;
+    outputTokens: number;
+    totalTokens: number;
+    cost: number;
+  };
+};
+
+const GPT4_1_PRICING = {
+  input: 0.0004,
+  output: 0.0016,
+};
+
+function calculateTokens(text: string): number {
+  try {
+    const encoder = encoding_for_model("gpt-4.1-mini");
+    const tokens = encoder.encode(text);
+    encoder.free();
+    return tokens.length;
+  } catch (error) {
+    return Math.ceil(text.length / 4);
+  }
+}
+
 export default async function generateResponse(
   data: Data,
   messages: Message
-): Promise<BotResponse> {
-  const sanitizeName = (name: string | undefined): string | undefined => {
-    if (!name) return undefined;
-    return name.replace(/[\s<|\\/>&]+/g, "_").substring(0, 64);
-  };
-
-  const messagesMaped: ChatCompletionMessageParam[] = messages.map((message) => {
-    if (message.ia) {
-      return {
-        role: "assistant",
-        content: message.content,
-      };
-    } else {
-      const sanitizedName = sanitizeName(message.name);
-      const userMessage: ChatCompletionMessageParam = {
-        role: "user",
-        content: message.content,
-      };
-
-      if (sanitizedName) {
-        userMessage.name = sanitizedName;
-      }
-
-      return userMessage;
-    }
-  });
+): Promise<GenerateResponseResult> {
+  const messagesMaped: string = messages
+    .map((message) => {
+      return message.content;
+    })
+    .join("\n");
 
   const formatDataForPrompt = (data: Data): string => {
     let formattedData = "Resumo da conversa e opiniões dos usuários:\n\n";
@@ -108,6 +115,19 @@ export default async function generateResponse(
   };
 
   const contextData = formatDataForPrompt(data);
+
+  // Calcular tokens de entrada
+  const inputMessages: ChatCompletionMessageParam[] = [
+    { role: "system", content: PERSONALITY_PROMPT },
+    { role: "assistant", content: contextData },
+    {
+      role: "user",
+      content: `Conversa: \n\n${messagesMaped}`,
+    },
+  ];
+
+  const inputText = inputMessages.map((msg) => msg.content).join("\n");
+  const inputTokens = calculateTokens(inputText);
 
   const stickerOptions = [
     "bravo.webp",
@@ -251,15 +271,11 @@ export default async function generateResponse(
   };
 
   const response = await openai.chat.completions.create({
-    model: "gpt-4.1",
-    messages: [
-      { role: "system", content: PERSONALITY_PROMPT },
-      { role: "assistant", content: contextData },
-      ...messagesMaped,
-    ],
+    model: "gpt-4.1-mini",
+    messages: inputMessages,
     response_format: responseSchema,
     temperature: 0.8,
-    max_tokens: 1000,
+    max_tokens: 100,
   });
 
   const content = response.choices[0]?.message?.content;
@@ -268,12 +284,37 @@ export default async function generateResponse(
     throw new Error("Nenhuma resposta foi gerada pela IA");
   }
 
+  // Calcular tokens de saída
+  const outputTokens = calculateTokens(content);
+  const totalTokens = inputTokens + outputTokens;
+
+  // Calcular custo
+  const inputCostUSD = (inputTokens / 1000) * GPT4_1_PRICING.input;
+  const outputCostUSD = (outputTokens / 1000) * GPT4_1_PRICING.output;
+  const totalCostUSD = inputCostUSD + outputCostUSD;
+  const cost = totalCostUSD;
+
   try {
-    console.log("Conteúdo recebido:", content);
+    console.log("---------------------------------");
+    console.log(
+      `💰 Tokens de entrada: ${inputTokens}, Tokens de saída: ${outputTokens}, Total: ${totalTokens}`
+    );
+    console.log(`💲 Custo da requisição: (USD) $ ${cost.toFixed(6)}`);
 
     const parsedResponse: { actions: ApiResponseAction[] } = JSON.parse(content);
 
-    // Converte da estrutura da API para a estrutura esperada
+    if (!Array.isArray(parsedResponse.actions)) {
+      return {
+        actions: [],
+        cost: {
+          inputTokens,
+          outputTokens,
+          totalTokens,
+          cost,
+        },
+      };
+    }
+
     const convertedActions: BotResponse = parsedResponse.actions.map((action) => {
       const result: ResponseAction = {};
 
@@ -292,7 +333,15 @@ export default async function generateResponse(
       return result;
     });
 
-    return convertedActions;
+    return {
+      actions: convertedActions,
+      cost: {
+        inputTokens,
+        outputTokens,
+        totalTokens,
+        cost,
+      },
+    };
   } catch (error) {
     console.error("Erro ao fazer parse da resposta JSON:", error);
     console.error("Conteúdo recebido:", content);

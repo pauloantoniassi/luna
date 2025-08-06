@@ -24,31 +24,11 @@ export default async function generateSummary(
   data: Data,
   messages: Message
 ): Promise<ResponseAction> {
-  const sanitizeName = (name: string | undefined): string | undefined => {
-    if (!name) return undefined;
-    return name.replace(/[\s<|\\/>&]+/g, "_").substring(0, 64);
-  };
-
-  const messagesMaped: ChatCompletionMessageParam[] = messages.map((message) => {
-    if (message.ia) {
-      return {
-        role: "assistant",
-        content: message.content,
-      };
-    } else {
-      const sanitizedName = sanitizeName(message.name);
-      const userMessage: ChatCompletionMessageParam = {
-        role: "user",
-        content: message.content,
-      };
-
-      if (sanitizedName) {
-        userMessage.name = sanitizedName;
-      }
-
-      return userMessage;
-    }
-  });
+  const messagesMaped: string = messages
+    .map((message) => {
+      return message.content;
+    })
+    .join("\n");
 
   const responseSchema = {
     type: "json_schema" as const,
@@ -133,18 +113,21 @@ export default async function generateSummary(
   const contextData = formatDataForPrompt(data);
 
   const response = await openai.chat.completions.create({
-    model: "gpt-4.1",
+    model: "gpt-4.1-nano",
     messages: [
       { role: "system", content: SUMMARY_PROMPT },
       {
         role: "assistant",
         content: `Resumo anterior (use ele como base para não perder dados.): ${data.summary}\n\nOpiniões já formadas dos usuários: ${contextData}`,
       },
-      ...messagesMaped,
+      {
+        role: "user",
+        content: `Conversa: \n\n${messagesMaped}`,
+      },
     ],
     response_format: responseSchema,
     temperature: 0.3,
-    max_tokens: 2000,
+    max_tokens: 1000,
   });
 
   const content = response.choices[0]?.message?.content;

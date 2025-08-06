@@ -6,6 +6,7 @@ import debounce from "./utils/debounce";
 import generateSummary from "./inteligence/generateSummary";
 
 let messages: Message = [];
+let lastRapyResponseTime = 0;
 
 export default function rapy(whatsapp: Whatsapp) {
   const db = database();
@@ -40,6 +41,7 @@ export default function rapy(whatsapp: Whatsapp) {
     });
 
     if (isGenerating) return;
+    if (content.length > 300) return;
 
     if (messages.length > 10) {
       debounce(
@@ -57,7 +59,7 @@ export default function rapy(whatsapp: Whatsapp) {
 
     const isRapyMentioned = content.toLowerCase().includes("rapy");
     const isGroupActive = () => {
-      if (recentMessageTimes.length < 3) return false;
+      if (recentMessageTimes.length < 4) return "normal";
 
       const intervals = [];
       for (let i = 1; i < recentMessageTimes.length; i++) {
@@ -67,19 +69,41 @@ export default function rapy(whatsapp: Whatsapp) {
       const averageInterval =
         intervals.reduce((sum, interval) => sum + interval, 0) / intervals.length;
 
-      return averageInterval < 30 * 1000;
+      if (averageInterval <= 5 * 1000) return "very_active";
+      if (averageInterval <= 9 * 1000) return "active";
+
+      return "normal";
     };
 
     const getDebounceTime = () => {
-      return isGroupActive() ? 3 * 1000 : 1 * 1000;
+      const activity = isGroupActive();
+      if (activity === "very_active") return 8 * 1000 + Math.random() * 4 * 1000;
+      if (activity === "active") return 5 * 1000 + Math.random() * 3 * 1000;
+      return 2 * 1000 + Math.random() * 2 * 1000;
     };
 
     const processResponse = async () => {
+      const timeSinceLastResponse = Date.now() - lastRapyResponseTime;
+      const minTimeBetweenResponses = isGroupActive() === "very_active" ? 15 * 1000 : 8 * 1000;
+
+      if (timeSinceLastResponse < minTimeBetweenResponses && !isRapyMentioned) {
+        return;
+      }
+
       isGenerating = true;
       try {
         whatsapp.setTyping(sessionId);
-        const response = await generateResponse(db.getAll(), messages);
-        if (response.length === 0) return;
+        const result = await generateResponse(db.getAll(), messages);
+        const response = result.actions;
+
+        if (response.length === 0) {
+          isGenerating = false;
+          whatsapp.setOnline(sessionId);
+          return;
+        }
+
+        lastRapyResponseTime = Date.now();
+
         for (const action of response) {
           if (action.message) {
             if (action.message.repply) {
@@ -140,8 +164,7 @@ export default function rapy(whatsapp: Whatsapp) {
               action.location.longitude
             );
           }
-
-          await new Promise((resolve) => setTimeout(resolve, 1500));
+          await new Promise((resolve) => setTimeout(resolve, 1500 + Math.random() * 1000));
         }
       } catch (error) {
         console.error("Erro ao gerar resposta:", error);
@@ -154,12 +177,8 @@ export default function rapy(whatsapp: Whatsapp) {
     if (isRapyMentioned) {
       await processResponse();
     } else {
+      const activity = isGroupActive();
       const debounceTime = getDebounceTime();
-      console.log(
-        `Grupo ${isGroupActive() ? "agitado" : "normal"}, usando debounce de ${
-          debounceTime / 1000
-        }s`
-      );
       debounce(processResponse, debounceTime, "debounce-response");
     }
   });
