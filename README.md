@@ -79,7 +79,12 @@ echo "OPENAI_API_KEY=sua_chave_aqui" > .env
 4. **Execute o projeto**
 
 ```bash
+# Para desenvolvimento (com hot reload)
 npm run dev
+
+# Para produção (compile primeiro)
+npm run build
+npm start
 ```
 
 5. **Escaneie o QR Code**
@@ -126,6 +131,10 @@ rapy/
 
 ```bash
 npm run dev    # Executa em modo desenvolvimento com hot reload
+```
+
+```bash
+npm run build    # Compila o TypeScript para JavaScript
 ```
 
 ```bash
