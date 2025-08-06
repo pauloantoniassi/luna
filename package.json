@@ -1,0 +1,20 @@
+{
+  "name": "rapy",
+  "version": "0.0.1",
+  "description": "Uma raposa feliz, intrigando, passiva-agressiva para seu whatsapp.",
+  "homepage": "https://github.com/oKauaDev/rapy#readme",
+  "bugs": {
+    "url": "https://github.com/oKauaDev/rapy/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oKauaDev/rapy.git"
+  },
+  "license": "ISC",
+  "author": "kaua.dev.br",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
