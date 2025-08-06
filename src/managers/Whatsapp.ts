@@ -148,7 +148,6 @@ export default class Whatsapp {
 
   private async updatePresence(to: string, presence: WAPresence) {
     if (!this.sock) throw new Error("Não conectado");
-
     await this.sock.sendPresenceUpdate(presence, to);
   }
 
