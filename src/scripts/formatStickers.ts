@@ -16,9 +16,9 @@ const resizeImage = async (file: string): Promise<void> => {
   try {
     await sharp(inputPath)
       .resize(512, 512, {
-        fit: "contain", // Mantém proporção
+        fit: "contain",
         position: "center",
-        background: { r: 0, g: 0, b: 0, alpha: 0 }, // Fundo transparente
+        background: { r: 0, g: 0, b: 0, alpha: 0 },
       })
       .toFormat("webp")
       .toFile(outputPath);
@@ -29,7 +29,6 @@ const resizeImage = async (file: string): Promise<void> => {
   }
 };
 
-// Processa todos os arquivos .webp da pasta
 const processAllImages = async (): Promise<void> => {
   const files: string[] = fs.readdirSync(inputDir);
 
