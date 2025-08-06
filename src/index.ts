@@ -1,3 +1,4 @@
+import "dotenv/config";
 import Whatsapp from "./managers/Whatsapp";
 import rapy from "./rapy";
 
