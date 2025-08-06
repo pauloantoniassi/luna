@@ -59,6 +59,10 @@ export default function database() {
         throw new Error("Data validation failed: " + JSON.stringify(isValid.error.errors));
       }
 
+      mapData.set("summary", dataToSave.summary || "");
+      mapData.set("opinions", dataToSave.opinions || []);
+      parsedData.summary = typeof dataToSave.summary === "string" ? dataToSave.summary : "";
+      parsedData.opinions = Array.isArray(dataToSave.opinions) ? dataToSave.opinions : [];
       fs.writeFileSync(file, JSON.stringify(dataToSave, null, 2));
     }
 

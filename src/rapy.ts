@@ -3,14 +3,17 @@ import generateResponse, { Message } from "./inteligence/generateResponse";
 import Whatsapp from "./managers/Whatsapp";
 import database from "./utils/database";
 import debounce from "./utils/debounce";
+import generateSummary from "./inteligence/generateSummary";
 
-const messages: Message = [];
+let messages: Message = [];
 
 export default function rapy(whatsapp: Whatsapp) {
   const db = database();
   let isGenerating = false;
 
-  whatsapp.registerMessageHandler((sessionId, msg, type, senderInfo) => {
+  whatsapp.registerMessageHandler(async (sessionId, msg, type, senderInfo) => {
+    console.log("Nova mensagem recebida :", type, msg);
+
     if (type !== "text") return;
     const content = msg.message?.conversation || msg.message?.extendedTextMessage?.text;
     if (!content || !senderInfo) return;
@@ -29,6 +32,14 @@ export default function rapy(whatsapp: Whatsapp) {
 
     if (isGenerating) return;
 
+    if (messages.length > 100) {
+      const summary = await generateSummary(db.getAll(), messages);
+      db.set("summary", summary.summary);
+      db.set("opinions", summary.opinions);
+      db.save();
+      messages = [];
+    }
+
     debounce(async () => {
       isGenerating = true;
       try {
@@ -39,16 +50,46 @@ export default function rapy(whatsapp: Whatsapp) {
             if (action.message.repply) {
               const message = action.message.text;
               await whatsapp.sendTextReply(sessionId, action.message.repply, message);
+              messages.push({
+                content: `(Rapy): ${content}`,
+                name: "Rapy",
+                jid: "",
+                ia: true,
+              });
             } else {
               const message = action.message.text;
               await whatsapp.sendText(sessionId, message);
+              messages.push({
+                content: `(Rapy): ${content}`,
+                name: "Rapy",
+                jid: "",
+                ia: true,
+              });
             }
           } else if (action.sticker) {
             const stickerPath = path.join(__dirname, "..", "stickers", action.sticker);
             await whatsapp.sendSticker(sessionId, stickerPath);
+            messages.push({
+              content: `(Rapy): <usou o sticker ${action.sticker}>`,
+              name: "Rapy",
+              jid: "",
+              ia: true,
+            });
           } else if (action.poll) {
             await whatsapp.createPoll(sessionId, action.poll.question, action.poll.options);
+            messages.push({
+              content: `(Rapy): <criou uma enquete: ${action.poll.question}>`,
+              name: "Rapy",
+              jid: "",
+              ia: true,
+            });
           } else if (action.location) {
+            messages.push({
+              content: `(Rapy): <enviou uma localização (${action.location.latitude}, ${action.location.longitude})>`,
+              name: "Rapy",
+              jid: "",
+              ia: true,
+            });
             await whatsapp.sendLocation(
               sessionId,
               action.location.latitude,

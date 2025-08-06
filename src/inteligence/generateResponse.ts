@@ -12,7 +12,24 @@ export type Message = {
 
 export type ResponseAction = {
   message?: {
-    repply: string;
+    repply?: string;
+    text: string;
+  };
+  sticker?: string;
+  poll?: {
+    question: string;
+    options: [string, string, string];
+  };
+  location?: {
+    latitude: number;
+    longitude: number;
+  };
+};
+
+type ApiResponseAction = {
+  type: "message" | "sticker" | "poll" | "location";
+  message?: {
+    repply?: string; // Opcional novamente
     text: string;
   };
   sticker?: string;
@@ -32,6 +49,11 @@ export default async function generateResponse(
   data: Data,
   messages: Message
 ): Promise<BotResponse> {
+  const sanitizeName = (name: string | undefined): string | undefined => {
+    if (!name) return undefined;
+    return name.replace(/[\s<|\\/>&]+/g, "_").substring(0, 64);
+  };
+
   const messagesMaped: ChatCompletionMessageParam[] = messages.map((message) => {
     if (message.ia) {
       return {
@@ -39,11 +61,17 @@ export default async function generateResponse(
         content: message.content,
       };
     } else {
-      return {
+      const sanitizedName = sanitizeName(message.name);
+      const userMessage: ChatCompletionMessageParam = {
         role: "user",
         content: message.content,
-        name: message.name,
       };
+
+      if (sanitizedName) {
+        userMessage.name = sanitizedName;
+      }
+
+      return userMessage;
     }
   });
 
@@ -98,77 +126,85 @@ export default async function generateResponse(
     type: "json_schema" as const,
     json_schema: {
       name: "bot_response",
-      strict: true,
+      strict: false,
       schema: {
-        type: "array",
-        items: {
-          type: "object",
-          properties: {
-            message: {
+        type: "object",
+        properties: {
+          actions: {
+            type: "array",
+            minItems: 1,
+            items: {
               type: "object",
               properties: {
-                repply: {
+                type: {
                   type: "string",
-                  description: "ID da mensagem que está sendo respondida",
+                  enum: ["message", "sticker", "poll", "location"],
+                  description: "Tipo da ação",
                 },
-                text: {
-                  type: "string",
-                  description:
-                    "Resposta com personalidade passivo-agressiva/irônica (máximo 300 caracteres)",
-                },
-              },
-              required: ["repply", "text"],
-              additionalProperties: false,
-            },
-            sticker: {
-              type: "string",
-              enum: stickerOptions,
-              description: "Nome do arquivo de sticker da lista disponível",
-            },
-            poll: {
-              type: "object",
-              properties: {
-                question: {
-                  type: "string",
-                  description: "Pergunta irônica/engraçada para a enquete",
-                },
-                options: {
-                  type: "array",
-                  items: {
-                    type: "string",
+                message: {
+                  type: "object",
+                  properties: {
+                    repply: {
+                      type: "string",
+                      description: "ID da mensagem que está sendo respondida (opcional)",
+                    },
+                    text: {
+                      type: "string",
+                      description:
+                        "Resposta com personalidade passivo-agressiva/irônica (máximo 300 caracteres)",
+                    },
                   },
-                  minItems: 3,
-                  maxItems: 3,
-                  description: "Exatamente 3 opções para a enquete",
+                  required: ["text"],
+                  additionalProperties: false,
+                },
+                sticker: {
+                  type: "string",
+                  enum: stickerOptions,
+                  description: "Nome do arquivo de sticker da lista disponível",
+                },
+                poll: {
+                  type: "object",
+                  properties: {
+                    question: {
+                      type: "string",
+                      description: "Pergunta irônica/engraçada para a enquete",
+                    },
+                    options: {
+                      type: "array",
+                      items: {
+                        type: "string",
+                      },
+                      minItems: 3,
+                      maxItems: 3,
+                      description: "Exatamente 3 opções para a enquete",
+                    },
+                  },
+                  required: ["question", "options"],
+                  additionalProperties: false,
+                },
+                location: {
+                  type: "object",
+                  properties: {
+                    latitude: {
+                      type: "number",
+                      description: "Latitude da localização",
+                    },
+                    longitude: {
+                      type: "number",
+                      description: "Longitude da localização",
+                    },
+                  },
+                  required: ["latitude", "longitude"],
+                  additionalProperties: false,
                 },
               },
-              required: ["question", "options"],
-              additionalProperties: false,
-            },
-            location: {
-              type: "object",
-              properties: {
-                latitude: {
-                  type: "number",
-                  description: "Latitude da localização",
-                },
-                longitude: {
-                  type: "number",
-                  description: "Longitude da localização",
-                },
-              },
-              required: ["latitude", "longitude"],
+              required: ["type"],
               additionalProperties: false,
             },
           },
-          additionalProperties: false,
-          anyOf: [
-            { required: ["message"] },
-            { required: ["sticker"] },
-            { required: ["poll"] },
-            { required: ["location"] },
-          ],
         },
+        required: ["actions"],
+        additionalProperties: false,
       },
     },
   };
@@ -192,8 +228,28 @@ export default async function generateResponse(
   }
 
   try {
-    const parsedResponse: BotResponse = JSON.parse(content);
-    return parsedResponse;
+    console.log("Conteúdo recebido:", content);
+
+    const parsedResponse: { actions: ApiResponseAction[] } = JSON.parse(content);
+
+    // Converte da estrutura da API para a estrutura esperada
+    const convertedActions: BotResponse = parsedResponse.actions.map((action) => {
+      const result: ResponseAction = {};
+
+      if (action.type === "message" && action.message) {
+        result.message = action.message;
+      } else if (action.type === "sticker" && action.sticker) {
+        result.sticker = action.sticker;
+      } else if (action.type === "poll" && action.poll) {
+        result.poll = action.poll;
+      } else if (action.type === "location" && action.location) {
+        result.location = action.location;
+      }
+
+      return result;
+    });
+
+    return convertedActions;
   } catch (error) {
     console.error("Erro ao fazer parse da resposta JSON:", error);
     console.error("Conteúdo recebido:", content);
