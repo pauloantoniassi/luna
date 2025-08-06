@@ -210,7 +210,7 @@ export default async function generateResponse(
   };
 
   const response = await openai.chat.completions.create({
-    model: "gpt-4o",
+    model: "gpt-4.1",
     messages: [
       { role: "system", content: PERSONALITY_PROMPT },
       { role: "assistant", content: contextData },

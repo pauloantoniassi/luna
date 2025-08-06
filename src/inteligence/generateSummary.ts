@@ -133,7 +133,7 @@ export default async function generateSummary(
   const contextData = formatDataForPrompt(data);
 
   const response = await openai.chat.completions.create({
-    model: "gpt-4o",
+    model: "gpt-4.1",
     messages: [
       { role: "system", content: SUMMARY_PROMPT },
       {
