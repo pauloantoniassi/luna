@@ -10,6 +10,8 @@ let messages: Message = [];
 export default function rapy(whatsapp: Whatsapp) {
   const db = database();
   let isGenerating = false;
+  let lastMessageTime = 0;
+  let recentMessageTimes: number[] = [];
 
   whatsapp.registerMessageHandler(async (sessionId, msg, type, senderInfo) => {
     console.log("Nova mensagem recebida :", type, msg);
@@ -22,6 +24,16 @@ export default function rapy(whatsapp: Whatsapp) {
     const senderName = senderInfo.name || "Desconhecido";
 
     const messageId = msg.key.id;
+    const currentTime = Date.now();
+
+    recentMessageTimes.push(currentTime);
+
+    if (recentMessageTimes.length > 10) {
+      recentMessageTimes.shift();
+    }
+
+    const threeMinutesAgo = currentTime - 3 * 60 * 1000;
+    recentMessageTimes = recentMessageTimes.filter((time) => time > threeMinutesAgo);
 
     messages.push({
       content: `(${senderName}{userid: ${senderJid} (messageid: ${messageId})}): ${content}`,
@@ -40,7 +52,26 @@ export default function rapy(whatsapp: Whatsapp) {
       messages = [];
     }
 
-    debounce(async () => {
+    const isRapyMentioned = content.toLowerCase().includes("rapy");
+    const isGroupActive = () => {
+      if (recentMessageTimes.length < 3) return false;
+
+      const intervals = [];
+      for (let i = 1; i < recentMessageTimes.length; i++) {
+        intervals.push(recentMessageTimes[i] - recentMessageTimes[i - 1]);
+      }
+
+      const averageInterval =
+        intervals.reduce((sum, interval) => sum + interval, 0) / intervals.length;
+
+      return averageInterval < 30 * 1000;
+    };
+
+    const getDebounceTime = () => {
+      return isGroupActive() ? 3 * 1000 : 1 * 1000;
+    };
+
+    const processResponse = async () => {
       isGenerating = true;
       try {
         const response = await generateResponse(db.getAll(), messages);
@@ -51,7 +82,7 @@ export default function rapy(whatsapp: Whatsapp) {
               const message = action.message.text;
               await whatsapp.sendTextReply(sessionId, action.message.repply, message);
               messages.push({
-                content: `(Rapy): ${content}`,
+                content: `(Rapy): ${message}`,
                 name: "Rapy",
                 jid: "",
                 ia: true,
@@ -60,7 +91,7 @@ export default function rapy(whatsapp: Whatsapp) {
               const message = action.message.text;
               await whatsapp.sendText(sessionId, message);
               messages.push({
-                content: `(Rapy): ${content}`,
+                content: `(Rapy): ${message}`,
                 name: "Rapy",
                 jid: "",
                 ia: true,
@@ -104,6 +135,18 @@ export default function rapy(whatsapp: Whatsapp) {
       } finally {
         isGenerating = false;
       }
-    }, 1 * 1000);
+    };
+
+    if (isRapyMentioned) {
+      await processResponse();
+    } else {
+      const debounceTime = getDebounceTime();
+      console.log(
+        `Grupo ${isGroupActive() ? "agitado" : "normal"}, usando debounce de ${
+          debounceTime / 1000
+        }s`
+      );
+      debounce(processResponse, debounceTime);
+    }
   });
 }
