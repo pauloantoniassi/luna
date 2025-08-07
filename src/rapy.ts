@@ -98,7 +98,7 @@ export default function rapy(whatsapp: Whatsapp) {
 
         if (response.length === 0) {
           isGenerating = false;
-          whatsapp.setOnline(sessionId);
+          whatsapp.pauseTyping(sessionId);
           return;
         }
 
@@ -164,6 +164,7 @@ export default function rapy(whatsapp: Whatsapp) {
               action.location.longitude
             );
           }
+
           await new Promise((resolve) => setTimeout(resolve, 1500 + Math.random() * 1000));
         }
       } catch (error) {
