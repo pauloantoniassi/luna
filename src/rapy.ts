@@ -4,6 +4,7 @@ import Whatsapp from "./managers/Whatsapp";
 import database from "./utils/database";
 import debounce from "./utils/debounce";
 import generateSummary from "./inteligence/generateSummary";
+import getHomeDir from "./utils/getHomeDir";
 
 let messages: Message = [];
 let lastRapyResponseTime = 0;
@@ -126,7 +127,7 @@ export default function rapy(whatsapp: Whatsapp) {
               });
             }
           } else if (action.sticker) {
-            const stickerPath = path.join(__dirname, "..", "stickers", action.sticker);
+            const stickerPath = path.join(getHomeDir(), "stickers", action.sticker);
             await whatsapp.sendSticker(sessionId, stickerPath);
             messages.push({
               content: `(Rapy): <usou o sticker ${action.sticker}>`,
@@ -135,7 +136,7 @@ export default function rapy(whatsapp: Whatsapp) {
               ia: true,
             });
           } else if (action.audio) {
-            const audioPath = path.join(__dirname, "..", "audios", action.audio);
+            const audioPath = path.join(getHomeDir(), "audios", action.audio);
             await whatsapp.sendAudio(sessionId, audioPath);
             messages.push({
               content: `(Rapy): <enviou o áudio ${action.audio}>`,
@@ -144,7 +145,7 @@ export default function rapy(whatsapp: Whatsapp) {
               ia: true,
             });
           } else if (action.meme) {
-            const memePath = path.join(__dirname, "..", "memes", action.meme);
+            const memePath = path.join(getHomeDir(), "memes", action.meme);
             await whatsapp.sendImage(sessionId, memePath);
             messages.push({
               content: `(Rapy): <enviou o meme ${action.meme}>`,
