@@ -3,6 +3,8 @@ import openai from "../services/openai";
 import { Data } from "../utils/database";
 import PERSONALITY_PROMPT from "../constants/PERSONALITY_PROMPT";
 import { encoding_for_model } from "tiktoken";
+import * as fs from "fs";
+import path from "path";
 
 export type Message = {
   content: string;
@@ -74,6 +76,17 @@ function calculateTokens(text: string): number {
   }
 }
 
+const stickersDir = path.join(__dirname, "..", "..", "stickers");
+if (!fs.existsSync(stickersDir))
+  throw new Error("Diretório de stickers não encontrado: " + stickersDir);
+const stickerOptions: string[] = fs
+  .readdirSync(stickersDir)
+  .filter((file) => file.endsWith(".webp"));
+
+const audiosDir = path.join(__dirname, "..", "..", "audios");
+if (!fs.existsSync(audiosDir)) throw new Error("Diretório de áudios não encontrado: " + audiosDir);
+const audioOptions: string[] = fs.readdirSync(audiosDir).filter((file) => file.endsWith(".mp3"));
+
 export default async function generateResponse(
   data: Data,
   messages: Message
@@ -116,7 +129,6 @@ export default async function generateResponse(
 
   const contextData = formatDataForPrompt(data);
 
-  // Calcular tokens de entrada
   const inputMessages: ChatCompletionMessageParam[] = [
     { role: "system", content: PERSONALITY_PROMPT },
     { role: "assistant", content: contextData },
@@ -128,55 +140,6 @@ export default async function generateResponse(
 
   const inputText = inputMessages.map((msg) => msg.content).join("\n");
   const inputTokens = calculateTokens(inputText);
-
-  const stickerOptions = [
-    "bravo.webp",
-    "chorando-muito.webp",
-    "chorando-pouco.webp",
-    "emburrado.webp",
-    "entediado.webp",
-    "feliz.webp",
-    "pedindo-desculpas.webp",
-    "pensando.webp",
-    "rindo-fininho.webp",
-    "se-perguntando.webp",
-    "surpreso.webp",
-    "suspeito.webp",
-  ];
-
-  const audioOptions = [
-    "BOOMBAMBOP.mp3",
-    "BRUH.mp3",
-    "DING.mp3",
-    "FBI OPEN UP.mp3",
-    "HA!GOTEE!HA!.mp3",
-    "Hello There.mp3",
-    "Hi How Are Ya.mp3",
-    "HUH.mp3",
-    "INCEPTION.mp3",
-    "MEANWHILE.mp3",
-    "Metal Boom.mp3",
-    "MINECRAFT OOF.mp3",
-    "MY LEG.mp3",
-    "NO GOD PLEASE NO.mp3",
-    "NOPE.mp3",
-    "OH NO NO NO.mp3",
-    "OH!!!!!!!.mp3",
-    "RIMSHOT.mp3",
-    "Sadness-1.mp3",
-    "Sadness-2.mp3",
-    "Sadness-3.mp3",
-    "SHREK-SWAMP.mp3",
-    "TACTICAL NUKE.mp3",
-    "TBC.mp3",
-    "The Screaming Sheep.mp3",
-    "Titanic-Paroday.mp3",
-    "Wait a minute....mp3",
-    "WINDOWS-ERROR.mp3",
-    "WINDOWS-STARTUP.mp3",
-    "WOW.mp3",
-    "YEET.mp3",
-  ];
 
   const responseSchema = {
     type: "json_schema" as const,
