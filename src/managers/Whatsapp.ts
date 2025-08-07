@@ -10,6 +10,7 @@ import {
 import { Boom } from "@hapi/boom";
 import qrcode from "qrcode-terminal";
 import { LoggerConfig } from "../utils/logger";
+import debounce from "../utils/debounce";
 
 export type MessageHandler = (
   sessionId: string,
@@ -21,9 +22,12 @@ export type MessageHandler = (
   }
 ) => void;
 
+const OFFLINE_DELAY_MS = 60_000;
+
 export default class Whatsapp {
   private sock: WASocket | undefined;
   private onMessage?: MessageHandler;
+  private presence: WAPresence = "available";
 
   async init() {
     const { state, saveCreds } = await useMultiFileAuthState("auth");
@@ -74,6 +78,22 @@ export default class Whatsapp {
             jid: msg.key.participant,
             name: msg.pushName || undefined,
           };
+        }
+
+        debounce(
+          async () => {
+            try {
+              await this.sock!.sendPresenceUpdate("unavailable");
+              this.presence = "unavailable";
+            } catch {}
+          },
+          OFFLINE_DELAY_MS,
+          "debounce-offline"
+        );
+
+        if (this.presence === "unavailable") {
+          await this.sock!.sendPresenceUpdate("available");
+          this.presence = "available";
         }
 
         if (content.conversation || content.extendedTextMessage) {
