@@ -12,6 +12,8 @@ import qrcode from "qrcode-terminal";
 import { LoggerConfig } from "../utils/logger";
 import debounce from "../utils/debounce";
 import fs from "fs";
+import path from "path";
+import getHomeDir from "../utils/getHomeDir";
 
 export type MessageHandler = (
   sessionId: string,
@@ -56,6 +58,7 @@ export default class Whatsapp {
           this.init();
         } else {
           console.log("Desconectado. Faça login novamente.");
+          fs.rmSync(path.join(getHomeDir(), "auth"), { recursive: true, force: true });
         }
       } else if (connection === "open") {
         console.log("✅ Conectado ao WhatsApp");
@@ -149,6 +152,23 @@ export default class Whatsapp {
   async sendSticker(jid: string, filePath: string) {
     if (!this.sock) throw new Error("Não conectado");
     await this.sock.sendMessage(jid, { sticker: { url: filePath } });
+  }
+
+  async sendContact(jid: string, cell: string, name?: string) {
+    if (!this.sock) throw new Error("Não conectado");
+    const vcard =
+      "BEGIN:VCARD\n" +
+      "VERSION:3.0\n" +
+      `FN:${name}\n` +
+      `TEL;TYPE=CELL:${cell.replace(/\D/g, "")}\n` +
+      "END:VCARD";
+
+    await this.sock!.sendMessage(jid, {
+      contacts: {
+        displayName: name,
+        contacts: [{ vcard }],
+      },
+    });
   }
 
   async createPoll(jid: string, name: string, options: string[], selectableCount: number = 1) {

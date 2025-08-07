@@ -30,10 +30,14 @@ export type ResponseAction = {
     latitude: number;
     longitude: number;
   };
+  contact?: {
+    name?: string;
+    cell: string;
+  };
 };
 
 type ApiResponseAction = {
-  type: "message" | "sticker" | "audio" | "poll" | "location" | "meme";
+  type: "message" | "sticker" | "audio" | "poll" | "location" | "meme" | "contact";
   message?: {
     repply?: string; // Opcional novamente
     text: string;
@@ -44,6 +48,10 @@ type ApiResponseAction = {
   poll?: {
     question: string;
     options: [string, string, string];
+  };
+  contact?: {
+    name?: string;
+    cell: string;
   };
   location?: {
     latitude: number;
@@ -164,7 +172,7 @@ export default async function generateResponse(
               properties: {
                 type: {
                   type: "string",
-                  enum: ["message", "sticker", "audio", "poll", "location", "meme"],
+                  enum: ["message", "sticker", "audio", "poll", "location", "meme", "contact"],
                   description: "Tipo da ação",
                 },
                 message: {
@@ -319,6 +327,8 @@ export default async function generateResponse(
         result.location = action.location;
       } else if (action.type === "meme" && action.meme) {
         result.meme = action.meme;
+      } else if (action.type === "contact" && action.contact) {
+        result.contact = action.contact;
       }
 
       return result;

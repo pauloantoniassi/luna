@@ -173,6 +173,14 @@ export default async function rapy(whatsapp: Whatsapp) {
               action.location.latitude,
               action.location.longitude
             );
+          } else if (action.contact) {
+            messages.push({
+              content: `(Rapy): <enviou um contato (${action.contact.name} (${action.contact.cell}))>`,
+              name: "Rapy",
+              jid: "",
+              ia: true,
+            });
+            await whatsapp.sendContact(sessionId, action.contact.cell, action.contact.name);
           }
 
           await new Promise((resolve) => setTimeout(resolve, 1500 + Math.random() * 1000));

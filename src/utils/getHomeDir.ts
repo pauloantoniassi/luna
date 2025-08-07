@@ -1,5 +1,16 @@
 import path from "path";
 
 export default function getHomeDir() {
-  return path.resolve(__dirname, "../");
+  const baseDir = path.resolve(__dirname, "../");
+
+  if (
+    baseDir.endsWith("/src/") ||
+    baseDir.endsWith("\\src\\") ||
+    baseDir.endsWith("/src") ||
+    baseDir.endsWith("\\src")
+  ) {
+    return path.resolve(baseDir, "../");
+  }
+
+  return baseDir;
 }
