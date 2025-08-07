@@ -59,6 +59,7 @@ export default class Whatsapp {
         }
       } else if (connection === "open") {
         console.log("✅ Conectado ao WhatsApp");
+        this.debaunceOffline();
       }
     });
 
@@ -81,16 +82,7 @@ export default class Whatsapp {
           };
         }
 
-        debounce(
-          async () => {
-            try {
-              await this.sock!.sendPresenceUpdate("unavailable");
-              this.presence = "unavailable";
-            } catch {}
-          },
-          OFFLINE_DELAY_MS,
-          "debounce-offline"
-        );
+        this.debaunceOffline();
 
         if (this.presence === "unavailable") {
           await this.sock!.sendPresenceUpdate("available");
@@ -120,6 +112,19 @@ export default class Whatsapp {
 
   registerMessageHandler(handler: MessageHandler) {
     this.onMessage = handler;
+  }
+
+  private debaunceOffline() {
+    debounce(
+      async () => {
+        try {
+          await this.sock!.sendPresenceUpdate("unavailable");
+          this.presence = "unavailable";
+        } catch {}
+      },
+      OFFLINE_DELAY_MS,
+      "debounce-offline"
+    );
   }
 
   async sendText(jid: string, text: string) {
