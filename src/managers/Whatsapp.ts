@@ -11,6 +11,7 @@ import { Boom } from "@hapi/boom";
 import qrcode from "qrcode-terminal";
 import { LoggerConfig } from "../utils/logger";
 import debounce from "../utils/debounce";
+import fs from "fs";
 
 export type MessageHandler = (
   sessionId: string,
@@ -155,6 +156,21 @@ export default class Whatsapp {
     await this.sock.sendMessage(jid, {
       location: { degreesLatitude: latitude, degreesLongitude: longitude },
     });
+  }
+
+  async sendImage(jid: string, filePath: string) {
+    if (!this.sock) throw new Error("Não conectado");
+
+    try {
+      const imageBuffer = fs.readFileSync(filePath);
+      await this.sock.sendMessage(jid, {
+        image: imageBuffer,
+        mimetype: "image/jpeg",
+      });
+    } catch (error) {
+      console.error("Erro ao enviar imagem:", error);
+      throw error;
+    }
   }
 
   async sendAudio(jid: string, filePath: string) {

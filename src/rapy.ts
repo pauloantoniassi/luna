@@ -143,6 +143,15 @@ export default function rapy(whatsapp: Whatsapp) {
               jid: "",
               ia: true,
             });
+          } else if (action.meme) {
+            const memePath = path.join(__dirname, "..", "memes", action.meme);
+            await whatsapp.sendImage(sessionId, memePath);
+            messages.push({
+              content: `(Rapy): <enviou o meme ${action.meme}>`,
+              name: "Rapy",
+              jid: "",
+              ia: true,
+            });
           } else if (action.poll) {
             await whatsapp.createPoll(sessionId, action.poll.question, action.poll.options);
             messages.push({

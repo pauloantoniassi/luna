@@ -20,6 +20,7 @@ export type ResponseAction = {
   };
   sticker?: string;
   audio?: string;
+  meme?: string;
   poll?: {
     question: string;
     options: [string, string, string];
@@ -31,13 +32,14 @@ export type ResponseAction = {
 };
 
 type ApiResponseAction = {
-  type: "message" | "sticker" | "audio" | "poll" | "location";
+  type: "message" | "sticker" | "audio" | "poll" | "location" | "meme";
   message?: {
     repply?: string; // Opcional novamente
     text: string;
   };
   sticker?: string;
   audio?: string;
+  meme?: string;
   poll?: {
     question: string;
     options: [string, string, string];
@@ -86,6 +88,10 @@ const stickerOptions: string[] = fs
 const audiosDir = path.join(__dirname, "..", "..", "audios");
 if (!fs.existsSync(audiosDir)) throw new Error("Diretório de áudios não encontrado: " + audiosDir);
 const audioOptions: string[] = fs.readdirSync(audiosDir).filter((file) => file.endsWith(".mp3"));
+
+const memesDir = path.join(__dirname, "..", "..", "memes");
+if (!fs.existsSync(memesDir)) throw new Error("Diretório de memes não encontrado: " + memesDir);
+const memeOptions: string[] = fs.readdirSync(memesDir).filter((file) => file.endsWith(".jpg"));
 
 export default async function generateResponse(
   data: Data,
@@ -157,7 +163,7 @@ export default async function generateResponse(
               properties: {
                 type: {
                   type: "string",
-                  enum: ["message", "sticker", "audio", "poll", "location"],
+                  enum: ["message", "sticker", "audio", "poll", "location", "meme"],
                   description: "Tipo da ação",
                 },
                 message: {
@@ -185,6 +191,11 @@ export default async function generateResponse(
                   type: "string",
                   enum: audioOptions,
                   description: "Nome do arquivo de áudio da lista disponível",
+                },
+                meme: {
+                  type: "string",
+                  enum: memeOptions,
+                  description: "Nome do arquivo de meme da lista disponível",
                 },
                 poll: {
                   type: "object",
@@ -258,12 +269,6 @@ export default async function generateResponse(
   const cost = totalCostUSD;
 
   try {
-    console.log("---------------------------------");
-    console.log(
-      `💰 Tokens de entrada: ${inputTokens}, Tokens de saída: ${outputTokens}, Total: ${totalTokens}`
-    );
-    console.log(`💲 Custo da requisição: (USD) $ ${cost.toFixed(6)}`);
-
     const parsedResponse: { actions: ApiResponseAction[] } = JSON.parse(content);
 
     if (!Array.isArray(parsedResponse.actions)) {
@@ -278,6 +283,26 @@ export default async function generateResponse(
       };
     }
 
+    console.log("---------------------------------");
+    console.log(
+      `Conteúdo da resposta recebida (${parsedResponse.actions.length}):`,
+      parsedResponse.actions
+        .map(
+          (action) =>
+            action.audio ??
+            action.message?.text ??
+            action.sticker ??
+            action.meme ??
+            action.poll?.question ??
+            "N/A"
+        )
+        .join(", ")
+    );
+    console.log(
+      `💰 Tokens de entrada: ${inputTokens}, Tokens de saída: ${outputTokens}, Total: ${totalTokens}`
+    );
+    console.log(`💲 Custo da requisição: (USD) $ ${cost.toFixed(6)}`);
+
     const convertedActions: BotResponse = parsedResponse.actions.map((action) => {
       const result: ResponseAction = {};
 
@@ -291,6 +316,8 @@ export default async function generateResponse(
         result.poll = action.poll;
       } else if (action.type === "location" && action.location) {
         result.location = action.location;
+      } else if (action.type === "meme" && action.meme) {
+        result.meme = action.meme;
       }
 
       return result;
