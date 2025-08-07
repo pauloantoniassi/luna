@@ -9,7 +9,7 @@ import getHomeDir from "./utils/getHomeDir";
 let messages: Message = [];
 let lastRapyResponseTime = 0;
 
-export default function rapy(whatsapp: Whatsapp) {
+export default async function rapy(whatsapp: Whatsapp) {
   const db = database();
   let isGenerating = false;
   let recentMessageTimes: number[] = [];
@@ -188,9 +188,10 @@ export default function rapy(whatsapp: Whatsapp) {
     if (isRapyMentioned) {
       await processResponse();
     } else {
-      const activity = isGroupActive();
       const debounceTime = getDebounceTime();
       debounce(processResponse, debounceTime, "debounce-response");
     }
   });
+
+  await whatsapp.init();
 }
