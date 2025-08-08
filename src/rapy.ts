@@ -5,6 +5,7 @@ import database from "./utils/database";
 import debounce from "./utils/debounce";
 import generateSummary from "./inteligence/generateSummary";
 import getHomeDir from "./utils/getHomeDir";
+import log from "./utils/log";
 
 let messages: Message = [];
 let lastRapyResponseTime = 0;
@@ -96,6 +97,17 @@ export default async function rapy(whatsapp: Whatsapp) {
         whatsapp.setTyping(sessionId);
         const result = await generateResponse(db.getAll(), messages);
         const response = result.actions;
+
+        try {
+          const l = log();
+          l.add({
+            input: messages[messages.length - 1].content,
+            output: JSON.stringify(response, null, 2),
+          });
+          l.save();
+        } catch (error) {
+          console.error("Error saving log:", error);
+        }
 
         if (response.length === 0) {
           isGenerating = false;
