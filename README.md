@@ -1,187 +1,152 @@
-# 🦊 Rapy
+<p align="center">
+  <img src="./stickers/feliz.webp" alt="Rapy" width="120" />
+</p>
 
-> Uma raposa feliz, intrigante e passiva-agressiva para seu WhatsApp.
+<h1 align="center">Rapy <img src="./stickers/feliz.webp" width="20"/></h1>
+<p align="center"><i>Uma raposa feliz, intrigante e passiva-agressiva para o seu WhatsApp.</i></p>
 
-Rapy é um bot de WhatsApp com personalidade adolescente brasileira que usa inteligência artificial para interagir naturalmente em grupos e conversas privadas. Com uma vibe sarcástica e divertida, ela responde de forma contextual usando texto, stickers, enquetes e até mesmo localização.
+---
 
-## 🌟 Características
+## <img src="./stickers/pensando.webp" width="20"/> Sobre
 
-- **Personalidade Autêntica**: Fala como uma adolescente brasileira de 16 anos
-- **IA Contextual**: Usa OpenAI para gerar respostas inteligentes baseadas no histórico
-- **Múltiplos Formatos**: Responde com texto, stickers, enquetes e localização
-- **Sistema de Memória**: Mantém contexto das conversas e gera resumos automáticos
-- **Detecção de Atividade**: Adapta tempo de resposta baseado na atividade do grupo
-- **Menções Inteligentes**: Responde quando mencionada ou quando adequado ao contexto
+Rapy não é apenas um bot — é um novo membro do seu grupo. Ela **analisa, entende e interage** com as conversas de forma natural, sem depender de comandos chatos. Responde quando quer, com personalidade de **adolescente brasileira de 16 anos**, e ainda usa **IA contextual** para manter conversas mais divertidas e inteligentes.
 
-## 🚀 Funcionalidades
+---
 
-### 💬 Tipos de Resposta
+## <img src="./stickers/feliz.webp" width="20"/> Características
 
-- **Texto**: Mensagens naturais com gírias e expressões brasileiras
-- **Reply**: Responde diretamente a mensagens específicas
-- **Stickers**: 12 stickers expressivos para diferentes situações
-- **Enquetes**: Cria polls interativas
-- **Localização**: Compartilha coordenadas quando relevante
+| Função                      | Descrição                                                         |
+| --------------------------- | ----------------------------------------------------------------- |
+| **Personalidade Autêntica** | Linguagem natural, gírias e expressões brasileiras.               |
+| **IA Contextual**           | Responde com base no histórico e contexto das mensagens.          |
+| **Múltiplos Formatos**      | Texto, stickers, enquetes, localização, memes, áudios e contatos. |
+| **Sistema de Memória**      | Lembra interações e gera resumos automáticos.                     |
+| **Detecção de Atividade**   | Ajusta tempo de resposta conforme movimento no grupo.             |
+| **Emoções Dinâmicas**       | “Sentimento” diferente para cada membro, que muda com o tempo.    |
+| **Otimização de Tokens**    | Gasta o mínimo possível mantendo a qualidade.                     |
 
-### 🧠 Inteligência
+---
 
-- **Geração de Resumos**: Automaticamente resume conversas longas
-- **Contexto Persistente**: Lembra de interações anteriores
-- **Análise de Atividade**: Detecta quando o grupo está "agitado"
-- **Debounce Inteligente**: Evita spam ajustando frequência de resposta
+## <img src="./stickers/livre-para-falar.webp" width="20"/> Tipos de Resposta
 
-### 🎭 Stickers Disponíveis
+- **💬 Texto** — Respostas naturais com gírias e expressões.
+- **↩️ Reply** — Responde mensagens específicas.
+- **<img src="./stickers/feliz.webp" width="20"/> Stickers** — 12 stickers expressivos para diversas situações.
+- **📊 Enquetes** — Polls divertidas e interativas.
+- **📍 Localização** — Envia coordenadas quando relevante.
+- **<img src="./stickers/rindo-fininho.webp" width="20"/> Memes** — Memes pré-configurados para usar no momento certo.
+- **🎙️ Áudios** — Respostas por áudio gravadas previamente.
+- **📇 Contatos** — Contatos fictícios (tipo o do Elon Musk).
 
-- `bravo.webp` - Irritação divertida
-- `chorando-muito.webp` - Drama exagerado
-- `chorando-pouco.webp` - Tristeza leve
-- `emburrado.webp` - Birra fofa
-- `entediado.webp` - Tédio total
-- `feliz.webp` - Alegria genuína
-- `pedindo-desculpas.webp` - Desculpas fofas
-- `pensando.webp` - Reflexão
-- `rindo-fininho.webp` - Riso maroto
-- `se-perguntando.webp` - Curiosidade
-- `surpreso.webp` - Surpresa
-- `suspeito.webp` - Fofoca/investigação
+---
 
-## 🛠️ Tecnologias
+## <img src="./stickers/pensando.webp" width="20"/> Inteligência
 
-- **[Baileys](https://github.com/WhiskeySockets/Baileys)** - Cliente WhatsApp Web
-- **[OpenAI](https://openai.com/)** - Inteligência artificial para respostas
-- **TypeScript** - Linguagem principal
-- **Node.js** - Runtime
-- **Pino** - Sistema de logs
-- **Zod** - Validação de dados
+- **Resumos Automáticos** para conversas longas.
+- **Contexto Persistente** com memória local.
+- **Detecção de Agitação** no grupo.
+- **Debounce Inteligente** para evitar spam.
+- **Logs Detalhados** com custo estimado de cada resposta.
 
-## 📦 Instalação
+---
 
-1. **Clone o repositório**
+## <img src="./stickers/suspeito.webp" width="20"/> Tecnologias
+
+- **TypeScript** — Linguagem principal.
+- **Node.js** — Runtime.
+- **Baileys** — Cliente WhatsApp Web.
+- **OpenAI API** — Geração de respostas inteligentes.
+
+---
+
+## <img src="./stickers/surpreso.webp" width="20"/> Instalação
 
 ```bash
+# Clone o repositório
 git clone https://github.com/oKauaDev/rapy.git
 cd rapy
-```
 
-2. **Instale as dependências**
-
-```bash
+# Instale as dependências
 npm install
-```
 
-3. **Configure a API da OpenAI**
-
-```bash
-# Crie um arquivo .env na raiz do projeto
+# Configure o .env
 echo "OPENAI_API_KEY=sua_chave_aqui" > .env
+
+# Execute o projeto
+npm run dev      # Modo desenvolvimento
+npm run build    # Compilar para produção
+npm start        # Executar em produção
 ```
 
-4. **Execute o projeto**
+---
 
-```bash
-# Para desenvolvimento (com hot reload)
-npm run dev
-
-# Para produção (compile primeiro)
-npm run build
-npm start
-```
-
-5. **Escaneie o QR Code**
-   - Um QR Code aparecerá no terminal
-   - Escaneie com o WhatsApp para conectar
-
-## ⚙️ Configuração
-
-### Variáveis de Ambiente
+## <img src="./stickers/entediado.webp" width="20"/> Variáveis de Ambiente
 
 ```env
 OPENAI_API_KEY=sua_chave_da_openai
 NODE_ENV=development # ou production
 ```
 
-### Estrutura de Pastas
+---
 
-```
-rapy/
-├── src/
-│   ├── constants/       # Prompts de personalidade
-│   ├── inteligence/     # Geração de respostas e resumos
-│   ├── managers/        # Gerenciador do WhatsApp
-│   ├── services/        # Serviços externos (OpenAI)
-│   └── utils/           # Utilitários (database, logger, etc)
-├── auth/               # Autenticação do WhatsApp (gerado automaticamente)
-├── database/           # Banco de dados local (JSON)
-├── stickers/           # Stickers do bot
-└── package.json
-```
+## <img src="./stickers/comendo.webp" width="20"/> Como Funciona
 
-## 🎯 Como Funciona
-
-1. **Conexão**: O bot se conecta ao WhatsApp Web via Baileys
-2. **Escuta**: Monitora mensagens em grupos e conversas privadas
-3. **Contexto**: Analisa histórico de mensagens e atividade do grupo
-4. **IA**: Usa OpenAI para gerar respostas baseadas na personalidade definida
-5. **Resposta**: Envia texto, stickers, enquetes ou localização conforme apropriado
-6. **Memória**: Salva contexto e gera resumos para conversas longas
-
-## 🔧 Desenvolvimento
-
-### Scripts Disponíveis
-
-```bash
-npm run dev    # Executa em modo desenvolvimento com hot reload
-```
-
-```bash
-npm run build    # Compila o TypeScript para JavaScript
-```
-
-```bash
-npm start    # Executar em modo produção
-```
-
-```bash
-npm run format:stickers    # Converter os stickers para o formato correto.
-```
-
-### Estrutura do Código
-
-- `index.ts` - Ponto de entrada da aplicação
-- `rapy.ts` - Lógica principal do bot
-- `Whatsapp.ts` - Gerenciamento da conexão WhatsApp
-- `generateResponse.ts` - Geração de respostas via IA
-- `generateSummary.ts` - Geração de resumos de conversa
-
-## 🤝 Contribuição
-
-1. Fork o projeto
-2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
-3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
-4. Push para a branch (`git push origin feature/AmazingFeature`)
-5. Abra um Pull Request
-
-## 📝 Licença
-
-Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
-
-## 👨‍💻 Autor
-
-**kaua.dev.br**
-
-- GitHub: [@oKauaDev](https://github.com/oKauaDev)
-
-## ⚠️ Avisos
-
-- Use apenas em grupos onde todos consentiram com a presença do bot
-- Mantenha sua chave da OpenAI segura
-- O bot armazena contexto local para melhor experiência
-- Respeite os termos de uso do WhatsApp
-
-## 🐛 Reportar Issues
-
-Encontrou um bug ou tem uma sugestão? Abra uma [issue](https://github.com/oKauaDev/rapy/issues) no GitHub!
+1. **Conexão** com o WhatsApp Web via Baileys.
+2. **Escuta** mensagens em grupos.
+3. **Analisa** histórico e atividade do grupo.
+4. **Responde** com personalidade definida.
+5. **Memória** salva interações e gera resumos automáticos.
 
 ---
 
-> **Nota**: Este é um projeto educacional. Use com responsabilidade e respeite os termos de serviço das plataformas utilizadas.
+## <img src="./stickers/comendo-com-selfie.webp" width="20"/> Stickers, Memes e Áudios
+
+- **Memes** → Adicione na pasta `memes` com nome descritivo.
+- **Áudios** → Adicione na pasta `audios` com nome resumido.
+- **Stickers** → Coloque na pasta `real-stickers` (formato `.webp`), depois rode:
+
+  ```bash
+  npm run format:stickers
+  ```
+
+---
+
+## <img src="./stickers/livre-para-falar.webp" width="20"/> Scripts Disponíveis
+
+```bash
+npm run dev              # Modo desenvolvimento
+npm run build            # Compilar para produção
+npm start                # Executar em produção
+npm run format:stickers  # Formatar stickers
+```
+
+---
+
+## <img src="./stickers/feliz.webp" width="20"/> Contribuindo
+
+1. **Fork** este repositório.
+2. Crie sua branch: `git checkout -b feature/NovaFuncionalidade`.
+3. Commit: `git commit -m 'Adiciona nova funcionalidade'`.
+4. Push: `git push origin feature/NovaFuncionalidade`.
+5. Abra um Pull Request.
+
+---
+
+## <img src="./stickers/feliz.webp" width="20"/> Autor
+
+**Kauã Braz**
+🌐 [kaua.dev.br](https://kaua.dev.br)
+💻 [@oKauaDev](https://github.com/oKauaDev)
+
+---
+
+## <img src="./stickers/pedindo-desculpas.webp" width="20"/> Avisos
+
+- Use apenas em grupos com consentimento de todos.
+- Mantenha sua chave da OpenAI segura.
+- O bot armazena contexto local.
+- Baileys não é oficial do WhatsApp — uso por sua conta e risco.
+
+---
+
+> _"Rapy é como aquele amigo que aparece no grupo e muda toda a dinâmica — para melhor (ou pior 😏)."_
