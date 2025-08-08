@@ -1,0 +1,231 @@
+{"timestamp":"2025-08-08T13:11:40.275Z","level":"INFO","category":"TRIGGER","message":"Rapy foi mencionado - processando imediatamente"}
+{"timestamp":"2025-08-08T13:11:41.063Z","level":"ERROR","category":"GERAÇÃO","message":"Erro ao gerar resposta","data":{}}
+{"timestamp":"2025-08-08T13:11:41.070Z","level":"SUCCESS","category":"FINALIZAÇÃO","message":"Processo de resposta finalizado"}
+{"timestamp":"2025-08-08T13:12:33.125Z","level":"INFO","category":"TRIGGER","message":"Rapy foi mencionado - processando imediatamente"}
+{"timestamp":"2025-08-08T13:12:33.895Z","level":"SUCCESS","category":"POSSIBILIDADE","message":"Resposta aprovada para geração"}
+{"timestamp":"2025-08-08T13:12:36.268Z","level":"SUCCESS","category":"LOG","message":"Interação salva no arquivo de log"}
+{"timestamp":"2025-08-08T13:12:38.645Z","level":"SUCCESS","category":"FINALIZAÇÃO","message":"Processo de resposta finalizado"}
+{"timestamp":"2025-08-08T13:12:48.076Z","level":"INFO","category":"TRIGGER","message":"Processamento agendado via debounce","data":{"delay":"2s","atividade":"normal"}}
+{"timestamp":"2025-08-08T13:12:52.548Z","level":"SUCCESS","category":"POSSIBILIDADE","message":"Resposta aprovada para geração"}
+{"timestamp":"2025-08-08T13:12:54.025Z","level":"SUCCESS","category":"LOG","message":"Interação salva no arquivo de log"}
+{"timestamp":"2025-08-08T13:12:56.701Z","level":"SUCCESS","category":"FINALIZAÇÃO","message":"Processo de resposta finalizado"}
+{"timestamp":"2025-08-08T13:13:05.721Z","level":"INFO","category":"TRIGGER","message":"Processamento agendado via debounce","data":{"delay":"2s","atividade":"normal"}}
+{"timestamp":"2025-08-08T13:13:09.364Z","level":"SUCCESS","category":"POSSIBILIDADE","message":"Resposta aprovada para geração"}
+{"timestamp":"2025-08-08T13:13:10.734Z","level":"SUCCESS","category":"LOG","message":"Interação salva no arquivo de log"}
+{"timestamp":"2025-08-08T13:13:13.468Z","level":"SUCCESS","category":"FINALIZAÇÃO","message":"Processo de resposta finalizado"}
+{"timestamp":"2025-08-08T13:14:17.673Z","level":"INFO","category":"TRIGGER","message":"Processamento agendado via debounce","data":{"delay":"2s","atividade":"normal"}}
+{"timestamp":"2025-08-08T13:14:20.996Z","level":"ERROR","category":"GERAÇÃO","message":"Erro ao gerar resposta","data":{}}
+{"timestamp":"2025-08-08T13:14:20.998Z","level":"SUCCESS","category":"FINALIZAÇÃO","message":"Processo de resposta finalizado"}
+{"timestamp":"2025-08-08T13:17:37.100Z","level":"INFO","category":"TRIGGER","message":"Rapy foi mencionado - processando imediatamente"}
+{"timestamp":"2025-08-08T13:17:37.614Z","level":"SUCCESS","category":"POSSIBILIDADE","message":"Resposta aprovada para geração"}
+{"timestamp":"2025-08-08T13:17:39.911Z","level":"SUCCESS","category":"LOG","message":"Interação salva no arquivo de log"}
+{"timestamp":"2025-08-08T13:17:45.980Z","level":"SUCCESS","category":"FINALIZAÇÃO","message":"Processo de resposta finalizado"}
+{"timestamp":"2025-08-08T13:24:28.366Z","level":"INFO","category":"TRIGGER","message":"Rapy foi mencionado - processando imediatamente"}
+{"timestamp":"2025-08-08T13:24:29.608Z","level":"SUCCESS","category":"POSSIBILIDADE","message":"Resposta aprovada para geração"}
+{"timestamp":"2025-08-08T13:24:31.405Z","level":"SUCCESS","category":"LOG","message":"Interação salva no arquivo de log"}
+{"timestamp":"2025-08-08T13:24:37.458Z","level":"SUCCESS","category":"FINALIZAÇÃO","message":"Processo de resposta finalizado"}
+{"timestamp":"2025-08-08T13:25:06.648Z","level":"INFO","category":"TRIGGER","message":"Processamento agendado via debounce","data":{"delay":"3s","atividade":"normal"}}
+{"timestamp":"2025-08-08T13:25:11.257Z","level":"WARN","category":"POSSIBILIDADE","message":"Resposta não é apropriada no contexto atual"}
+{"timestamp":"2025-08-08T13:25:11.261Z","level":"SUCCESS","category":"FINALIZAÇÃO","message":"Processo de resposta finalizado"}
+{"timestamp":"2025-08-08T13:25:18.003Z","level":"INFO","category":"TRIGGER","message":"Processamento agendado via debounce","data":{"delay":"3s","atividade":"normal"}}
+{"timestamp":"2025-08-08T13:25:21.432Z","level":"INFO","category":"TRIGGER","message":"Processamento agendado via debounce","data":{"delay":"2s","atividade":"normal"}}
+{"timestamp":"2025-08-08T13:25:25.484Z","level":"WARN","category":"POSSIBILIDADE","message":"Resposta não é apropriada no contexto atual"}
+{"timestamp":"2025-08-08T13:25:25.486Z","level":"SUCCESS","category":"FINALIZAÇÃO","message":"Processo de resposta finalizado"}
+{"timestamp":"2025-08-08T13:25:40.109Z","level":"INFO","category":"TRIGGER","message":"Rapy foi mencionado - processando imediatamente"}
+{"timestamp":"2025-08-08T13:25:41.008Z","level":"WARN","category":"POSSIBILIDADE","message":"Resposta não é apropriada no contexto atual"}
+{"timestamp":"2025-08-08T13:25:41.014Z","level":"SUCCESS","category":"FINALIZAÇÃO","message":"Processo de resposta finalizado"}
+{"timestamp":"2025-08-08T13:25:48.842Z","level":"INFO","category":"TRIGGER","message":"Processamento agendado via debounce","data":{"delay":"2s","atividade":"normal"}}
+{"timestamp":"2025-08-08T13:25:52.282Z","level":"WARN","category":"POSSIBILIDADE","message":"Resposta não é apropriada no contexto atual"}
+{"timestamp":"2025-08-08T13:25:52.284Z","level":"SUCCESS","category":"FINALIZAÇÃO","message":"Processo de resposta finalizado"}
+{"timestamp":"2025-08-08T13:25:59.720Z","level":"INFO","category":"TRIGGER","message":"Rapy foi mencionado - processando imediatamente"}
+{"timestamp":"2025-08-08T13:26:00.283Z","level":"WARN","category":"POSSIBILIDADE","message":"Resposta não é apropriada no contexto atual"}
+{"timestamp":"2025-08-08T13:26:00.285Z","level":"SUCCESS","category":"FINALIZAÇÃO","message":"Processo de resposta finalizado"}
+{"timestamp":"2025-08-08T13:36:25.791Z","level":"INFO","category":"TRIGGER","message":"Rapy foi mencionado - processando imediatamente"}
+{"timestamp":"2025-08-08T13:36:26.519Z","level":"SUCCESS","category":"POSSIBILIDADE","message":"Resposta aprovada para geração"}
+{"timestamp":"2025-08-08T13:36:27.851Z","level":"SUCCESS","category":"LOG","message":"Interação salva no arquivo de log"}
+{"timestamp":"2025-08-08T13:36:30.718Z","level":"SUCCESS","category":"FINALIZAÇÃO","message":"Processo de resposta finalizado"}
+{"timestamp":"2025-08-08T13:36:32.535Z","level":"INFO","category":"TRIGGER","message":"Processamento agendado via debounce","data":{"delay":"2s","atividade":"normal"}}
+{"timestamp":"2025-08-08T13:36:35.420Z","level":"INFO","category":"DEBOUNCE","message":"Resposta bloqueada por cooldown","data":{"tempo restante":"0s"}}
+{"timestamp":"2025-08-08T13:36:43.719Z","level":"INFO","category":"TRIGGER","message":"Processamento agendado via debounce","data":{"delay":"3s","atividade":"normal"}}
+{"timestamp":"2025-08-08T13:36:48.129Z","level":"WARN","category":"POSSIBILIDADE","message":"Resposta não é apropriada no contexto atual"}
+{"timestamp":"2025-08-08T13:36:48.131Z","level":"SUCCESS","category":"FINALIZAÇÃO","message":"Processo de resposta finalizado"}
+{"timestamp":"2025-08-08T13:37:00.331Z","level":"INFO","category":"TRIGGER","message":"Rapy foi mencionado - processando imediatamente"}
+{"timestamp":"2025-08-08T13:37:01.395Z","level":"WARN","category":"POSSIBILIDADE","message":"Resposta não é apropriada no contexto atual"}
+{"timestamp":"2025-08-08T13:37:01.396Z","level":"SUCCESS","category":"FINALIZAÇÃO","message":"Processo de resposta finalizado"}
+{"timestamp":"2025-08-08T13:41:26.891Z","level":"INFO","category":"TRIGGER","message":"Rapy foi mencionado - processando imediatamente"}
+{"timestamp":"2025-08-08T13:41:27.520Z","level":"SUCCESS","category":"POSSIBILIDADE","message":"Resposta aprovada por: Mencionado na mensagem"}
+{"timestamp":"2025-08-08T13:41:29.332Z","level":"SUCCESS","category":"LOG","message":"Interação salva no arquivo de log"}
+{"timestamp":"2025-08-08T13:41:32.019Z","level":"SUCCESS","category":"FINALIZAÇÃO","message":"Processo de resposta finalizado"}
+{"timestamp":"2025-08-08T13:41:38.009Z","level":"INFO","category":"TRIGGER","message":"Processamento agendado via debounce","data":{"delay":"2s","atividade":"normal"}}
+{"timestamp":"2025-08-08T13:41:41.204Z","level":"WARN","category":"POSSIBILIDADE","message":"Resposta não é apropriada por: Tema profundo ou impacto"}
+{"timestamp":"2025-08-08T13:41:41.205Z","level":"SUCCESS","category":"FINALIZAÇÃO","message":"Processo de resposta finalizado"}
+{"timestamp":"2025-08-08T13:41:54.488Z","level":"INFO","category":"TRIGGER","message":"Rapy foi mencionado - processando imediatamente"}
+{"timestamp":"2025-08-08T13:41:55.151Z","level":"WARN","category":"POSSIBILIDADE","message":"Resposta não é apropriada por: Repetição de conteúdo"}
+{"timestamp":"2025-08-08T13:41:55.153Z","level":"SUCCESS","category":"FINALIZAÇÃO","message":"Processo de resposta finalizado"}
+{"timestamp":"2025-08-08T13:44:16.632Z","level":"INFO","category":"TRIGGER","message":"Processamento agendado via debounce","data":{"delay":"3s","atividade":"normal"}}
+{"timestamp":"2025-08-08T13:44:25.494Z","level":"SUCCESS","category":"POSSIBILIDADE","message":"Resposta aprovada por: Começo de conversa leve"}
+{"timestamp":"2025-08-08T13:44:26.856Z","level":"SUCCESS","category":"LOG","message":"Interação salva no arquivo de log"}
+{"timestamp":"2025-08-08T13:44:29.473Z","level":"SUCCESS","category":"FINALIZAÇÃO","message":"Processo de resposta finalizado"}
+{"timestamp":"2025-08-08T13:44:37.167Z","level":"INFO","category":"TRIGGER","message":"Processamento agendado via debounce","data":{"delay":"2s","atividade":"normal"}}
+{"timestamp":"2025-08-08T13:44:46.450Z","level":"WARN","category":"POSSIBILIDADE","message":"Resposta não é apropriada por: Conversa entre duas pessoas."}
+{"timestamp":"2025-08-08T13:44:46.452Z","level":"SUCCESS","category":"FINALIZAÇÃO","message":"Processo de resposta finalizado"}
+{"timestamp":"2025-08-08T13:44:53.900Z","level":"INFO","category":"TRIGGER","message":"Rapy foi mencionado - processando imediatamente"}
+{"timestamp":"2025-08-08T13:45:00.973Z","level":"WARN","category":"POSSIBILIDADE","message":"Resposta não é apropriada por: Influenciado pelo ciclo repetido"}
+{"timestamp":"2025-08-08T13:45:00.975Z","level":"SUCCESS","category":"FINALIZAÇÃO","message":"Processo de resposta finalizado"}
+{"timestamp":"2025-08-08T13:45:10.685Z","level":"INFO","category":"TRIGGER","message":"Processamento agendado via debounce","data":{"delay":"2s","atividade":"normal"}}
+{"timestamp":"2025-08-08T13:45:20.104Z","level":"WARN","category":"POSSIBILIDADE","message":"Resposta não é apropriada por: Conversa repetitiva"}
+{"timestamp":"2025-08-08T13:45:20.106Z","level":"SUCCESS","category":"FINALIZAÇÃO","message":"Processo de resposta finalizado"}
+{"timestamp":"2025-08-08T13:45:39.351Z","level":"INFO","category":"TRIGGER","message":"Processamento agendado via debounce","data":{"delay":"3s","atividade":"normal"}}
+{"timestamp":"2025-08-08T13:45:48.546Z","level":"SUCCESS","category":"POSSIBILIDADE","message":"Resposta aprovada por: O sentimento é leve e é uma chamada geral"}
+{"timestamp":"2025-08-08T13:45:50.071Z","level":"SUCCESS","category":"LOG","message":"Interação salva no arquivo de log"}
+{"timestamp":"2025-08-08T13:45:53.214Z","level":"SUCCESS","category":"FINALIZAÇÃO","message":"Processo de resposta finalizado"}
+{"timestamp":"2025-08-08T13:46:05.557Z","level":"INFO","category":"TRIGGER","message":"Processamento agendado via debounce","data":{"delay":"2s","atividade":"normal"}}
+{"timestamp":"2025-08-08T13:46:15.101Z","level":"WARN","category":"POSSIBILIDADE","message":"Resposta não é apropriada por: Sem menção ou oportunidade"}
+{"timestamp":"2025-08-08T13:46:15.102Z","level":"SUCCESS","category":"FINALIZAÇÃO","message":"Processo de resposta finalizado"}
+{"timestamp":"2025-08-08T13:47:09.705Z","level":"INFO","category":"TRIGGER","message":"Processamento agendado via debounce","data":{"delay":"3s","atividade":"normal"}}
+{"timestamp":"2025-08-08T13:47:14.371Z","level":"SUCCESS","category":"POSSIBILIDADE","message":"Resposta aprovada por: Responde na mesma vibe"}
+{"timestamp":"2025-08-08T13:47:15.897Z","level":"SUCCESS","category":"LOG","message":"Interação salva no arquivo de log"}
+{"timestamp":"2025-08-08T13:47:18.918Z","level":"SUCCESS","category":"FINALIZAÇÃO","message":"Processo de resposta finalizado"}
+{"timestamp":"2025-08-08T13:47:19.439Z","level":"INFO","category":"TRIGGER","message":"Processamento agendado via debounce","data":{"delay":"2s","atividade":"normal"}}
+{"timestamp":"2025-08-08T13:47:21.542Z","level":"INFO","category":"DEBOUNCE","message":"Resposta bloqueada por cooldown","data":{"tempo restante":"2s"}}
+{"timestamp":"2025-08-08T13:47:30.331Z","level":"INFO","category":"TRIGGER","message":"Processamento agendado via debounce","data":{"delay":"2s","atividade":"normal"}}
+{"timestamp":"2025-08-08T13:47:33.550Z","level":"WARN","category":"POSSIBILIDADE","message":"Resposta não é apropriada por: Começou conflito sério ou é só zoeira"}
+{"timestamp":"2025-08-08T13:47:33.552Z","level":"SUCCESS","category":"FINALIZAÇÃO","message":"Processo de resposta finalizado"}
+{"timestamp":"2025-08-08T13:49:42.284Z","level":"INFO","category":"TRIGGER","message":"Processamento agendado via debounce","data":{"delay":"3s","atividade":"normal"}}
+{"timestamp":"2025-08-08T13:49:46.526Z","level":"SUCCESS","category":"POSSIBILIDADE","message":"Resposta aprovada por: Cumprimento normal no grupo"}
+{"timestamp":"2025-08-08T13:49:47.906Z","level":"SUCCESS","category":"LOG","message":"Interação salva no arquivo de log"}
+{"timestamp":"2025-08-08T13:49:50.033Z","level":"SUCCESS","category":"FINALIZAÇÃO","message":"Processo de resposta finalizado"}
+{"timestamp":"2025-08-08T13:49:54.429Z","level":"INFO","category":"TRIGGER","message":"Processamento agendado via debounce","data":{"delay":"2s","atividade":"normal"}}
+{"timestamp":"2025-08-08T13:49:57.337Z","level":"SUCCESS","category":"POSSIBILIDADE","message":"Resposta aprovada por: Conversas normais do grupo"}
+{"timestamp":"2025-08-08T13:49:58.682Z","level":"SUCCESS","category":"LOG","message":"Interação salva no arquivo de log"}
+{"timestamp":"2025-08-08T13:50:00.477Z","level":"SUCCESS","category":"FINALIZAÇÃO","message":"Processo de resposta finalizado"}
+{"timestamp":"2025-08-08T13:50:41.844Z","level":"INFO","category":"TRIGGER","message":"Rapy foi mencionado - processando imediatamente"}
+{"timestamp":"2025-08-08T13:50:42.555Z","level":"SUCCESS","category":"POSSIBILIDADE","message":"Resposta aprovada por: Conversa normal e casual"}
+{"timestamp":"2025-08-08T13:50:43.867Z","level":"SUCCESS","category":"LOG","message":"Interação salva no arquivo de log"}
+{"timestamp":"2025-08-08T13:50:45.685Z","level":"SUCCESS","category":"FINALIZAÇÃO","message":"Processo de resposta finalizado"}
+{"timestamp":"2025-08-08T13:50:52.582Z","level":"INFO","category":"TRIGGER","message":"Processamento agendado via debounce","data":{"delay":"5s","atividade":"active"}}
+{"timestamp":"2025-08-08T13:50:58.605Z","level":"SUCCESS","category":"POSSIBILIDADE","message":"Resposta aprovada por: Conversa normal e divertida"}
+{"timestamp":"2025-08-08T13:51:00.116Z","level":"SUCCESS","category":"LOG","message":"Interação salva no arquivo de log"}
+{"timestamp":"2025-08-08T13:51:02.750Z","level":"SUCCESS","category":"FINALIZAÇÃO","message":"Processo de resposta finalizado"}
+{"timestamp":"2025-08-08T13:51:08.793Z","level":"INFO","category":"TRIGGER","message":"Processamento agendado via debounce","data":{"delay":"2s","atividade":"normal"}}
+{"timestamp":"2025-08-08T13:51:11.693Z","level":"SUCCESS","category":"POSSIBILIDADE","message":"Resposta aprovada por: Conversa normal, zoeira e brincadeiras"}
+{"timestamp":"2025-08-08T13:51:13.257Z","level":"SUCCESS","category":"LOG","message":"Interação salva no arquivo de log"}
+{"timestamp":"2025-08-08T13:51:15.119Z","level":"SUCCESS","category":"FINALIZAÇÃO","message":"Processo de resposta finalizado"}
+{"timestamp":"2025-08-08T13:51:30.573Z","level":"INFO","category":"TRIGGER","message":"Processamento agendado via debounce","data":{"delay":"3s","atividade":"normal"}}
+{"timestamp":"2025-08-08T13:51:34.988Z","level":"SUCCESS","category":"POSSIBILIDADE","message":"Resposta aprovada por: Bate-papo normal do grupo"}
+{"timestamp":"2025-08-08T13:51:36.487Z","level":"SUCCESS","category":"LOG","message":"Interação salva no arquivo de log"}
+{"timestamp":"2025-08-08T13:51:38.231Z","level":"SUCCESS","category":"FINALIZAÇÃO","message":"Processo de resposta finalizado"}
+{"timestamp":"2025-08-08T13:51:52.520Z","level":"INFO","category":"TRIGGER","message":"Processamento agendado via debounce","data":{"delay":"3s","atividade":"normal"}}
+{"timestamp":"2025-08-08T13:51:56.648Z","level":"SUCCESS","category":"POSSIBILIDADE","message":"Resposta aprovada por: Conversa casual e brincadeira"}
+{"timestamp":"2025-08-08T13:51:57.644Z","level":"SUCCESS","category":"LOG","message":"Interação salva no arquivo de log"}
+{"timestamp":"2025-08-08T13:52:00.300Z","level":"SUCCESS","category":"FINALIZAÇÃO","message":"Processo de resposta finalizado"}
+{"timestamp":"2025-08-08T13:53:52.194Z","level":"INFO","category":"TRIGGER","message":"Rapy foi mencionado - processando imediatamente"}
+{"timestamp":"2025-08-08T13:53:52.928Z","level":"SUCCESS","category":"POSSIBILIDADE","message":"Resposta aprovada por: Pergunta comum na conversa"}
+{"timestamp":"2025-08-08T13:53:54.420Z","level":"SUCCESS","category":"LOG","message":"Interação salva no arquivo de log"}
+{"timestamp":"2025-08-08T13:53:57.099Z","level":"SUCCESS","category":"FINALIZAÇÃO","message":"Processo de resposta finalizado"}
+{"timestamp":"2025-08-08T13:54:02.289Z","level":"INFO","category":"TRIGGER","message":"Processamento agendado via debounce","data":{"delay":"2s","atividade":"normal"}}
+{"timestamp":"2025-08-08T13:54:05.181Z","level":"SUCCESS","category":"POSSIBILIDADE","message":"Resposta aprovada por: Conversas normais e casuais"}
+{"timestamp":"2025-08-08T13:54:08.402Z","level":"SUCCESS","category":"LOG","message":"Interação salva no arquivo de log"}
+{"timestamp":"2025-08-08T13:54:10.603Z","level":"SUCCESS","category":"FINALIZAÇÃO","message":"Processo de resposta finalizado"}
+{"timestamp":"2025-08-08T13:56:46.170Z","level":"INFO","category":"TRIGGER","message":"Processamento agendado via debounce","data":{"delay":"2s","atividade":"normal"}}
+{"timestamp":"2025-08-08T13:56:49.556Z","level":"SUCCESS","category":"POSSIBILIDADE","message":"Resposta aprovada por: Saudação comum no grupo"}
+{"timestamp":"2025-08-08T13:56:50.983Z","level":"SUCCESS","category":"LOG","message":"Interação salva no arquivo de log"}
+{"timestamp":"2025-08-08T13:56:53.442Z","level":"SUCCESS","category":"FINALIZAÇÃO","message":"Processo de resposta finalizado"}
+{"timestamp":"2025-08-08T13:57:03.684Z","level":"INFO","category":"TRIGGER","message":"Processamento agendado via debounce","data":{"delay":"3s","atividade":"normal"}}
+{"timestamp":"2025-08-08T13:57:08.150Z","level":"SUCCESS","category":"POSSIBILIDADE","message":"Resposta aprovada por: Conversa normal e casual"}
+{"timestamp":"2025-08-08T13:57:09.493Z","level":"SUCCESS","category":"LOG","message":"Interação salva no arquivo de log"}
+{"timestamp":"2025-08-08T13:57:11.462Z","level":"SUCCESS","category":"FINALIZAÇÃO","message":"Processo de resposta finalizado"}
+{"timestamp":"2025-08-08T13:58:24.654Z","level":"INFO","category":"TRIGGER","message":"Processamento agendado via debounce","data":{"delay":"2s","atividade":"normal"}}
+{"timestamp":"2025-08-08T13:58:28.079Z","level":"SUCCESS","category":"POSSIBILIDADE","message":"Resposta aprovada por: Mensagem comum de cumprimento"}
+{"timestamp":"2025-08-08T13:58:29.357Z","level":"SUCCESS","category":"LOG","message":"Interação salva no arquivo de log"}
+{"timestamp":"2025-08-08T13:58:32.394Z","level":"SUCCESS","category":"FINALIZAÇÃO","message":"Processo de resposta finalizado"}
+{"timestamp":"2025-08-08T13:58:35.202Z","level":"INFO","category":"TRIGGER","message":"Processamento agendado via debounce","data":{"delay":"2s","atividade":"normal"}}
+{"timestamp":"2025-08-08T13:58:38.661Z","level":"SUCCESS","category":"POSSIBILIDADE","message":"Resposta aprovada por: Conversas normais e leves"}
+{"timestamp":"2025-08-08T13:58:40.097Z","level":"SUCCESS","category":"LOG","message":"Interação salva no arquivo de log"}
+{"timestamp":"2025-08-08T13:58:41.927Z","level":"SUCCESS","category":"FINALIZAÇÃO","message":"Processo de resposta finalizado"}
+{"timestamp":"2025-08-08T14:02:25.105Z","level":"INFO","category":"TRIGGER","message":"Processamento agendado via debounce","data":{"delay":"2s","atividade":"normal"}}
+{"timestamp":"2025-08-08T14:02:29.109Z","level":"SUCCESS","category":"POSSIBILIDADE","message":"Resposta aprovada por: Saudação comum no grupo"}
+{"timestamp":"2025-08-08T14:02:30.791Z","level":"SUCCESS","category":"LOG","message":"Interação salva no arquivo de log"}
+{"timestamp":"2025-08-08T14:02:33.955Z","level":"SUCCESS","category":"FINALIZAÇÃO","message":"Processo de resposta finalizado"}
+{"timestamp":"2025-08-08T14:02:35.443Z","level":"INFO","category":"TRIGGER","message":"Processamento agendado via debounce","data":{"delay":"3s","atividade":"normal"}}
+{"timestamp":"2025-08-08T14:02:39.477Z","level":"SUCCESS","category":"POSSIBILIDADE","message":"Resposta aprovada por: Conversas normais do grupo"}
+{"timestamp":"2025-08-08T14:02:40.710Z","level":"SUCCESS","category":"LOG","message":"Interação salva no arquivo de log"}
+{"timestamp":"2025-08-08T14:02:42.834Z","level":"SUCCESS","category":"FINALIZAÇÃO","message":"Processo de resposta finalizado"}
+{"timestamp":"2025-08-08T14:03:32.456Z","level":"INFO","category":"TRIGGER","message":"Processamento agendado via debounce","data":{"delay":"2s","atividade":"normal"}}
+{"timestamp":"2025-08-08T14:03:35.470Z","level":"SUCCESS","category":"POSSIBILIDADE","message":"Resposta aprovada por: Pergunta comum de bom dia"}
+{"timestamp":"2025-08-08T14:03:36.738Z","level":"SUCCESS","category":"LOG","message":"Interação salva no arquivo de log"}
+{"timestamp":"2025-08-08T14:03:39.788Z","level":"SUCCESS","category":"FINALIZAÇÃO","message":"Processo de resposta finalizado"}
+{"timestamp":"2025-08-08T14:03:44.046Z","level":"INFO","category":"TRIGGER","message":"Processamento agendado via debounce","data":{"delay":"2s","atividade":"normal"}}
+{"timestamp":"2025-08-08T14:03:46.911Z","level":"SUCCESS","category":"POSSIBILIDADE","message":"Resposta aprovada por: Conversas normais e leves"}
+{"timestamp":"2025-08-08T14:03:48.084Z","level":"SUCCESS","category":"LOG","message":"Interação salva no arquivo de log"}
+{"timestamp":"2025-08-08T14:03:50.397Z","level":"SUCCESS","category":"FINALIZAÇÃO","message":"Processo de resposta finalizado"}
+{"timestamp":"2025-08-08T14:04:40.410Z","level":"INFO","category":"TRIGGER","message":"Processamento agendado via debounce","data":{"delay":"2s","atividade":"normal"}}
+{"timestamp":"2025-08-08T14:04:43.644Z","level":"SUCCESS","category":"POSSIBILIDADE","message":"Resposta aprovada por: Conversa normal e casual"}
+{"timestamp":"2025-08-08T14:04:44.777Z","level":"SUCCESS","category":"LOG","message":"Interação salva no arquivo de log"}
+{"timestamp":"2025-08-08T14:04:47.379Z","level":"SUCCESS","category":"FINALIZAÇÃO","message":"Processo de resposta finalizado"}
+{"timestamp":"2025-08-08T14:06:52.992Z","level":"INFO","category":"TRIGGER","message":"Processamento agendado via debounce","data":{"delay":"2s","atividade":"normal"}}
+{"timestamp":"2025-08-08T14:06:56.965Z","level":"SUCCESS","category":"POSSIBILIDADE","message":"Resposta aprovada por: Saudação comum no grupo"}
+{"timestamp":"2025-08-08T14:06:58.522Z","level":"SUCCESS","category":"LOG","message":"Interação salva no arquivo de log"}
+{"timestamp":"2025-08-08T14:07:01.339Z","level":"SUCCESS","category":"FINALIZAÇÃO","message":"Processo de resposta finalizado"}
+{"timestamp":"2025-08-08T14:07:02.856Z","level":"INFO","category":"TRIGGER","message":"Processamento agendado via debounce","data":{"delay":"3s","atividade":"normal"}}
+{"timestamp":"2025-08-08T14:07:06.353Z","level":"INFO","category":"DEBOUNCE","message":"Resposta bloqueada por cooldown","data":{"tempo restante":"0s"}}
+{"timestamp":"2025-08-08T14:07:21.265Z","level":"INFO","category":"TRIGGER","message":"Rapy foi mencionado - processando imediatamente"}
+{"timestamp":"2025-08-08T14:07:21.850Z","level":"SUCCESS","category":"POSSIBILIDADE","message":"Resposta aprovada por: Conversa normal de bom dia"}
+{"timestamp":"2025-08-08T14:07:23.362Z","level":"SUCCESS","category":"LOG","message":"Interação salva no arquivo de log"}
+{"timestamp":"2025-08-08T14:07:25.195Z","level":"SUCCESS","category":"FINALIZAÇÃO","message":"Processo de resposta finalizado"}
+{"timestamp":"2025-08-08T14:07:33.039Z","level":"INFO","category":"TRIGGER","message":"Processamento agendado via debounce","data":{"delay":"2s","atividade":"normal"}}
+{"timestamp":"2025-08-08T14:07:36.578Z","level":"SUCCESS","category":"POSSIBILIDADE","message":"Resposta aprovada por: Conversa comum do grupo"}
+{"timestamp":"2025-08-08T14:07:38.067Z","level":"SUCCESS","category":"LOG","message":"Interação salva no arquivo de log"}
+{"timestamp":"2025-08-08T14:07:40.415Z","level":"SUCCESS","category":"FINALIZAÇÃO","message":"Processo de resposta finalizado"}
+{"timestamp":"2025-08-08T14:07:49.716Z","level":"INFO","category":"TRIGGER","message":"Processamento agendado via debounce","data":{"delay":"3s","atividade":"normal"}}
+{"timestamp":"2025-08-08T14:07:53.940Z","level":"WARN","category":"POSSIBILIDADE","message":"Resposta não é apropriada por: Pergunta sobre mensagem"}
+{"timestamp":"2025-08-08T14:07:53.942Z","level":"SUCCESS","category":"FINALIZAÇÃO","message":"Processo de resposta finalizado"}
+{"timestamp":"2025-08-08T14:08:05.538Z","level":"INFO","category":"TRIGGER","message":"Processamento agendado via debounce","data":{"delay":"3s","atividade":"normal"}}
+{"timestamp":"2025-08-08T14:08:09.949Z","level":"SUCCESS","category":"POSSIBILIDADE","message":"Resposta aprovada por: Conversa normal de grupo"}
+{"timestamp":"2025-08-08T14:08:11.607Z","level":"SUCCESS","category":"LOG","message":"Interação salva no arquivo de log"}
+{"timestamp":"2025-08-08T14:08:14.169Z","level":"SUCCESS","category":"FINALIZAÇÃO","message":"Processo de resposta finalizado"}
+{"timestamp":"2025-08-08T14:12:05.890Z","level":"INFO","category":"TRIGGER","message":"Processamento agendado via debounce","data":{"delay":"3s","atividade":"normal"}}
+{"timestamp":"2025-08-08T14:12:10.056Z","level":"SUCCESS","category":"POSSIBILIDADE","message":"Resposta aprovada por: Pergunta comum de manhã"}
+{"timestamp":"2025-08-08T14:12:11.809Z","level":"SUCCESS","category":"LOG","message":"Interação salva no arquivo de log"}
+{"timestamp":"2025-08-08T14:12:15.456Z","level":"SUCCESS","category":"FINALIZAÇÃO","message":"Processo de resposta finalizado"}
+{"timestamp":"2025-08-08T14:12:18.228Z","level":"INFO","category":"TRIGGER","message":"Processamento agendado via debounce","data":{"delay":"3s","atividade":"normal"}}
+{"timestamp":"2025-08-08T14:12:22.770Z","level":"SUCCESS","category":"POSSIBILIDADE","message":"Resposta aprovada por: Conversa normal e casual"}
+{"timestamp":"2025-08-08T14:12:23.921Z","level":"SUCCESS","category":"LOG","message":"Interação salva no arquivo de log"}
+{"timestamp":"2025-08-08T14:12:23.923Z","level":"WARN","category":"RESPOSTA","message":"Nenhuma ação foi gerada pela IA"}
+{"timestamp":"2025-08-08T14:12:23.927Z","level":"SUCCESS","category":"FINALIZAÇÃO","message":"Processo de resposta finalizado"}
+{"timestamp":"2025-08-08T14:13:53.104Z","level":"INFO","category":"TRIGGER","message":"Processamento agendado via debounce","data":{"delay":"2s","atividade":"normal"}}
+{"timestamp":"2025-08-08T14:13:55.912Z","level":"SUCCESS","category":"POSSIBILIDADE","message":"Resposta aprovada por: Pergunta comum do grupo"}
+{"timestamp":"2025-08-08T14:13:57.678Z","level":"SUCCESS","category":"LOG","message":"Interação salva no arquivo de log"}
+{"timestamp":"2025-08-08T14:13:59.789Z","level":"SUCCESS","category":"FINALIZAÇÃO","message":"Processo de resposta finalizado"}
+{"timestamp":"2025-08-08T14:14:06.055Z","level":"INFO","category":"TRIGGER","message":"Processamento agendado via debounce","data":{"delay":"3s","atividade":"normal"}}
+{"timestamp":"2025-08-08T14:14:10.712Z","level":"SUCCESS","category":"POSSIBILIDADE","message":"Resposta aprovada por: Conversas normais de bom dia"}
+{"timestamp":"2025-08-08T14:14:12.120Z","level":"SUCCESS","category":"LOG","message":"Interação salva no arquivo de log"}
+{"timestamp":"2025-08-08T14:14:13.894Z","level":"SUCCESS","category":"FINALIZAÇÃO","message":"Processo de resposta finalizado"}
+{"timestamp":"2025-08-08T14:17:03.123Z","level":"INFO","category":"TRIGGER","message":"Processamento agendado via debounce","data":{"delay":"2s","atividade":"normal"}}
+{"timestamp":"2025-08-08T14:17:06.361Z","level":"SUCCESS","category":"POSSIBILIDADE","message":"Resposta aprovada por: Pergunta comum do dia"}
+{"timestamp":"2025-08-08T14:17:08.008Z","level":"SUCCESS","category":"LOG","message":"Interação salva no arquivo de log"}
+{"timestamp":"2025-08-08T14:17:10.862Z","level":"SUCCESS","category":"FINALIZAÇÃO","message":"Processo de resposta finalizado"}
+{"timestamp":"2025-08-08T14:17:22.468Z","level":"INFO","category":"TRIGGER","message":"Processamento agendado via debounce","data":{"delay":"2s","atividade":"normal"}}
+{"timestamp":"2025-08-08T14:17:25.776Z","level":"SUCCESS","category":"POSSIBILIDADE","message":"Resposta aprovada por: Conversa do grupo normal"}
+{"timestamp":"2025-08-08T14:17:27.027Z","level":"SUCCESS","category":"LOG","message":"Interação salva no arquivo de log"}
+{"timestamp":"2025-08-08T14:17:29.643Z","level":"SUCCESS","category":"FINALIZAÇÃO","message":"Processo de resposta finalizado"}
+{"timestamp":"2025-08-08T14:30:28.587Z","level":"INFO","category":"TRIGGER","message":"Processamento agendado via debounce","data":{"delay":"2s","atividade":"normal"}}
+{"timestamp":"2025-08-08T14:30:32.354Z","level":"SUCCESS","category":"POSSIBILIDADE","message":"Resposta aprovada por: Conversa de rotina"}
+{"timestamp":"2025-08-08T14:30:34.004Z","level":"SUCCESS","category":"LOG","message":"Interação salva no arquivo de log"}
+{"timestamp":"2025-08-08T14:30:36.272Z","level":"SUCCESS","category":"FINALIZAÇÃO","message":"Processo de resposta finalizado"}
+{"timestamp":"2025-08-08T14:30:49.275Z","level":"INFO","category":"TRIGGER","message":"Processamento agendado via debounce","data":{"delay":"3s","atividade":"normal"}}
+{"timestamp":"2025-08-08T14:30:53.383Z","level":"SUCCESS","category":"POSSIBILIDADE","message":"Resposta aprovada por: Conversa normal e casual"}
+{"timestamp":"2025-08-08T14:30:54.702Z","level":"SUCCESS","category":"LOG","message":"Interação salva no arquivo de log"}
+{"timestamp":"2025-08-08T14:30:57.286Z","level":"SUCCESS","category":"FINALIZAÇÃO","message":"Processo de resposta finalizado"}
+{"timestamp":"2025-08-08T14:31:11.673Z","level":"INFO","category":"TRIGGER","message":"Processamento agendado via debounce","data":{"delay":"3s","atividade":"normal"}}
+{"timestamp":"2025-08-08T14:31:15.500Z","level":"SUCCESS","category":"POSSIBILIDADE","message":"Resposta aprovada por: Conversa normal de grupo"}
+{"timestamp":"2025-08-08T14:31:17.113Z","level":"SUCCESS","category":"LOG","message":"Interação salva no arquivo de log"}
+{"timestamp":"2025-08-08T14:31:18.999Z","level":"SUCCESS","category":"FINALIZAÇÃO","message":"Processo de resposta finalizado"}
+{"timestamp":"2025-08-08T14:31:23.839Z","level":"INFO","category":"TRIGGER","message":"Processamento agendado via debounce","data":{"delay":"2s","atividade":"normal"}}
+{"timestamp":"2025-08-08T14:31:30.192Z","level":"SUCCESS","category":"POSSIBILIDADE","message":"Resposta aprovada por: Conversa normal e casual"}
+{"timestamp":"2025-08-08T14:31:32.059Z","level":"SUCCESS","category":"LOG","message":"Interação salva no arquivo de log"}
+{"timestamp":"2025-08-08T14:31:34.472Z","level":"SUCCESS","category":"FINALIZAÇÃO","message":"Processo de resposta finalizado"}
+{"timestamp":"2025-08-08T14:31:47.878Z","level":"INFO","category":"TRIGGER","message":"Processamento agendado via debounce","data":{"delay":"2s","atividade":"normal"}}
+{"timestamp":"2025-08-08T14:31:51.779Z","level":"SUCCESS","category":"POSSIBILIDADE","message":"Resposta aprovada por: Conversas normais do grupo"}
+{"timestamp":"2025-08-08T14:31:53.244Z","level":"SUCCESS","category":"LOG","message":"Interação salva no arquivo de log"}
+{"timestamp":"2025-08-08T14:31:56.237Z","level":"SUCCESS","category":"FINALIZAÇÃO","message":"Processo de resposta finalizado"}

@@ -6,6 +6,7 @@ import { encoding_for_model } from "tiktoken";
 import * as fs from "fs";
 import path from "path";
 import getHomeDir from "../utils/getHomeDir";
+import beautifulLogger from "../utils/beautifulLogger";
 
 export type Message = {
   content: string;
@@ -16,7 +17,7 @@ export type Message = {
 
 export type ResponseAction = {
   message?: {
-    repply?: string;
+    reply?: string;
     text: string;
   };
   sticker?: string;
@@ -39,7 +40,7 @@ export type ResponseAction = {
 type ApiResponseAction = {
   type: "message" | "sticker" | "audio" | "poll" | "location" | "meme" | "contact";
   message?: {
-    repply?: string; // Opcional novamente
+    reply?: string;
     text: string;
   };
   sticker?: string;
@@ -106,11 +107,27 @@ export default async function generateResponse(
   data: Data,
   messages: Message
 ): Promise<GenerateResponseResult> {
-  const messagesMaped: string = messages
-    .map((message) => {
-      return message.content;
-    })
+  beautifulLogger.aiGeneration("start", "Iniciando geração de resposta...");
+
+  const uniqueMessages = messages.filter((message, index, array) => {
+    return !array.some(
+      (otherMessage, otherIndex) =>
+        otherIndex > index &&
+        otherMessage.content === message.content &&
+        otherMessage.name === message.name
+    );
+  });
+
+  const messagesMaped: string = uniqueMessages
+    .map((message, i) => `${i + 1} - ${message.content}`)
     .join("\n");
+
+  beautifulLogger.aiGeneration("processing", {
+    "mensagens processadas": uniqueMessages.length,
+    "mensagens originais": messages.length,
+    "duplicatas removidas": messages.length - uniqueMessages.length,
+    "mensagem mais recente": uniqueMessages[uniqueMessages.length - 1]?.content || "nenhuma",
+  });
 
   const formatDataForPrompt = (data: Data): string => {
     let formattedData = "Resumo da conversa e opiniões dos usuários:\n\n";
@@ -156,6 +173,11 @@ export default async function generateResponse(
   const inputText = inputMessages.map((msg) => msg.content).join("\n");
   const inputTokens = calculateTokens(inputText);
 
+  beautifulLogger.aiGeneration("tokens", {
+    "tokens de entrada": inputTokens,
+    "tamanho da mensagem": inputText.length,
+  });
+
   const responseSchema = {
     type: "json_schema" as const,
     json_schema: {
@@ -178,7 +200,7 @@ export default async function generateResponse(
                 message: {
                   type: "object",
                   properties: {
-                    repply: {
+                    reply: {
                       type: "string",
                       description: "ID da mensagem que está sendo respondida (opcional)",
                     },
@@ -253,6 +275,8 @@ export default async function generateResponse(
     },
   };
 
+  beautifulLogger.aiGeneration("processing", "Enviando requisição para OpenAI...");
+
   const response = await openai.chat.completions.create({
     model: "gpt-4.1-mini",
     messages: inputMessages,
@@ -264,6 +288,7 @@ export default async function generateResponse(
   const content = response.choices[0]?.message?.content;
 
   if (!content) {
+    beautifulLogger.aiGeneration("error", "Nenhuma resposta foi gerada pela IA");
     throw new Error("Nenhuma resposta foi gerada pela IA");
   }
 
@@ -277,10 +302,18 @@ export default async function generateResponse(
   const totalCostUSD = inputCostUSD + outputCostUSD;
   const cost = totalCostUSD;
 
+  beautifulLogger.aiGeneration("cost", {
+    "tokens entrada": inputTokens,
+    "tokens saída": outputTokens,
+    "tokens total": totalTokens,
+    "custo (USD)": `$${cost.toFixed(6)}`,
+  });
+
   try {
     const parsedResponse: { actions: ApiResponseAction[] } = JSON.parse(content);
 
     if (!Array.isArray(parsedResponse.actions)) {
+      beautifulLogger.aiGeneration("error", "Resposta não contém array de ações válidas");
       return {
         actions: [],
         cost: {
@@ -292,25 +325,10 @@ export default async function generateResponse(
       };
     }
 
-    console.log("---------------------------------");
-    console.log(
-      `Conteúdo da resposta recebida (${parsedResponse.actions.length}):`,
-      parsedResponse.actions
-        .map(
-          (action) =>
-            action.audio ??
-            action.message?.text ??
-            action.sticker ??
-            action.meme ??
-            action.poll?.question ??
-            "N/A"
-        )
-        .join(", ")
-    );
-    console.log(
-      `💰 Tokens de entrada: ${inputTokens}, Tokens de saída: ${outputTokens}, Total: ${totalTokens}`
-    );
-    console.log(`💲 Custo da requisição: (USD) $ ${cost.toFixed(6)}`);
+    beautifulLogger.aiGeneration("response", {
+      "quantidade de ações": parsedResponse.actions.length,
+      "tipos de ação": parsedResponse.actions.map((a) => a.type).join(", "),
+    });
 
     const convertedActions: BotResponse = parsedResponse.actions.map((action) => {
       const result: ResponseAction = {};
@@ -334,6 +352,11 @@ export default async function generateResponse(
       return result;
     });
 
+    beautifulLogger.aiGeneration("complete", {
+      "ações processadas": convertedActions.length,
+      "pronto para enviar": "sim",
+    });
+
     return {
       actions: convertedActions,
       cost: {
@@ -344,6 +367,10 @@ export default async function generateResponse(
       },
     };
   } catch (error) {
+    beautifulLogger.aiGeneration("error", {
+      erro: "Falha ao fazer parse da resposta JSON",
+      "conteúdo recebido": content.substring(0, 100) + "...",
+    });
     console.error("Erro ao fazer parse da resposta JSON:", error);
     console.error("Conteúdo recebido:", content);
     throw new Error("Resposta da IA não está no formato JSON válido");
