@@ -1,15 +1,15 @@
 <p align="center">
-  <img src="./stickers/feliz.webp" alt="Rapy" width="120" />
+  <img src="./stickers/feliz.webp" alt="Luna" width="120" />
 </p>
 
-<h1 align="center">Rapy <img src="./stickers/feliz.webp" width="20"/></h1>
+<h1 align="center">Luna <img src="./stickers/feliz.webp" width="20"/></h1>
 <p align="center"><i>Uma raposa feliz, intrigante e passiva-agressiva para o seu WhatsApp.</i></p>
 
 ---
 
 ## <img src="./stickers/pensando.webp" width="20"/> Sobre
 
-Rapy não é apenas um bot — é um novo membro do seu grupo. Ela **analisa, entende e interage** com as conversas de forma natural, sem depender de comandos chatos. Responde quando quer, com personalidade de **adolescente brasileira de 16 anos**, e ainda usa **IA contextual** para manter conversas mais divertidas e inteligentes.
+Luna não é apenas um bot — é um novo membro do seu grupo. Ela **analisa, entende e interage** com as conversas de forma natural, sem depender de comandos chatos. Responde quando quer, com personalidade de **adolescente brasileira de 16 anos**, e ainda usa **IA contextual** para manter conversas mais divertidas e inteligentes.
 
 ---
 
@@ -63,8 +63,8 @@ Rapy não é apenas um bot — é um novo membro do seu grupo. Ela **analisa, en
 
 ```bash
 # Clone o repositório
-git clone https://github.com/oKauaDev/rapy.git
-cd rapy
+git clone https://github.com/pauloantoniassi/luna.git
+cd luna
 
 # Instale as dependências
 npm install
@@ -132,14 +132,6 @@ npm run format:stickers  # Formatar stickers
 
 ---
 
-## <img src="./stickers/feliz.webp" width="20"/> Autor
-
-**Kauã Braz**
-🌐 [kaua.dev.br](https://kaua.dev.br)
-💻 [@oKauaDev](https://github.com/oKauaDev)
-
----
-
 ## <img src="./stickers/pedindo-desculpas.webp" width="20"/> Avisos
 
 - Use apenas em grupos com consentimento de todos.
@@ -149,4 +141,4 @@ npm run format:stickers  # Formatar stickers
 
 ---
 
-> _"Rapy é como aquele amigo que aparece no grupo e muda toda a dinâmica — para melhor (ou pior 😏)."_
+> _"Luna é como aquele amigo que aparece no grupo e muda toda a dinâmica — para melhor (ou pior 😏)."_

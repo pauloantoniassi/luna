@@ -6,7 +6,7 @@ import { Message } from "./generateResponse";
 import beautifulLogger from "../utils/beautifulLogger";
 import DEFAULT_MESSAGES from "../constants/DEFAULT_MESSAGES";
 
-export default async function silenceRapy(
+export default async function silenceLuna(
   whatsapp: Whatsapp,
   sessionId: string,
   msg: proto.IWebMessageInfo,
@@ -17,12 +17,12 @@ export default async function silenceRapy(
   if (!content) return { silenced, messages };
   const messageId = msg.key.id;
 
-  if (content === "/rapy-cala-boca") {
+  if (content === "/luna-cala-boca") {
     const stickerPath = path.join(getHomeDir(), "stickers", "silenciado.webp");
     await whatsapp.sendSticker(sessionId, stickerPath);
     messages.push({
-      content: `(Rapy): <usou o sticker silenciado.webp>`,
-      name: "Rapy",
+      content: `(Luna): <usou o sticker silenciado.webp>`,
+      name: "Luna",
       jid: "",
       ia: true,
     });
@@ -32,8 +32,8 @@ export default async function silenceRapy(
 
     await whatsapp.sendText(sessionId, DEFAULT_MESSAGES.SILENCED);
     messages.push({
-      content: `(Rapy): ${DEFAULT_MESSAGES.SILENCED}`,
-      name: "Rapy",
+      content: `(Luna): ${DEFAULT_MESSAGES.SILENCED}`,
+      name: "Luna",
       jid: "",
       ia: true,
     });
@@ -50,12 +50,12 @@ export default async function silenceRapy(
     };
   }
 
-  if (content === "/rapy-liberado") {
+  if (content === "/luna-liberado") {
     const stickerPath = path.join(getHomeDir(), "stickers", "livre-para-falar.webp");
     await whatsapp.sendSticker(sessionId, stickerPath);
     messages.push({
-      content: `(Rapy): <usou o sticker livre-para-falar.webp>`,
-      name: "Rapy",
+      content: `(Luna): <usou o sticker livre-para-falar.webp>`,
+      name: "Luna",
       jid: "",
       ia: true,
     });
@@ -65,8 +65,8 @@ export default async function silenceRapy(
 
     await whatsapp.sendText(sessionId, DEFAULT_MESSAGES.UNSILENCED);
     messages.push({
-      content: `(Rapy): ${DEFAULT_MESSAGES.UNSILENCED}`,
-      name: "Rapy",
+      content: `(Luna): ${DEFAULT_MESSAGES.UNSILENCED}`,
+      name: "Luna",
       jid: "",
       ia: true,
     });
@@ -83,7 +83,7 @@ export default async function silenceRapy(
     };
   }
 
-  if (silenced && content.toLowerCase().includes("rapy")) {
+  if (silenced && content.toLowerCase().includes("luna")) {
     if (messageId) {
       await whatsapp.sendTextReply(sessionId, messageId, DEFAULT_MESSAGES.TRYING_TO_SPEAK);
     } else {
@@ -91,8 +91,8 @@ export default async function silenceRapy(
     }
 
     messages.push({
-      content: `(Rapy): ${DEFAULT_MESSAGES.TRYING_TO_SPEAK}`,
-      name: "Rapy",
+      content: `(Luna): ${DEFAULT_MESSAGES.TRYING_TO_SPEAK}`,
+      name: "Luna",
       jid: "",
       ia: true,
     });

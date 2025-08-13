@@ -1,14 +1,14 @@
 {
-  "name": "rapy",
+  "name": "luna",
   "version": "0.0.1",
   "description": "Uma raposa feliz, intrigando, passiva-agressiva para seu whatsapp.",
-  "homepage": "https://github.com/oKauaDev/rapy#readme",
+  "homepage": "https://github.com/pauloantoniassi/luna#readme",
   "bugs": {
-    "url": "https://github.com/oKauaDev/rapy/issues"
+    "url": "https://github.com/pauloantoniassi/luna/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/oKauaDev/rapy.git"
+    "url": "git+https://github.com/pauloantoniassi/luna.git"
   },
   "license": "MIT",
   "author": "kaua.dev.br",

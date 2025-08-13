@@ -8,14 +8,14 @@ import getHomeDir from "./utils/getHomeDir";
 import log from "./utils/log";
 import isPossibleResponse from "./inteligence/isPossibleResponse";
 import beautifulLogger from "./utils/beautifulLogger";
-import silenceRapy from "./inteligence/silenceRapy";
+import silenceLuna from "./inteligence/silenceLuna";
 
 let messages: Message = [];
-let lastRapyResponseTime = 0;
+let lastLunaResponseTime = 0;
 const messagesIds = new Map<string, string>();
 let silenced = false;
 
-export default async function rapy(whatsapp: Whatsapp) {
+export default async function luna(whatsapp: Whatsapp) {
   const db = database();
   let isGenerating = false;
   let recentMessageTimes: number[] = [];
@@ -26,7 +26,7 @@ export default async function rapy(whatsapp: Whatsapp) {
     if (!content || !senderInfo) return;
     const messageId = msg.key.id;
 
-    const silence = await silenceRapy(whatsapp, sessionId, msg, messages, silenced);
+    const silence = await silenceLuna(whatsapp, sessionId, msg, messages, silenced);
     silenced = silence?.silenced;
     messages.push(...(silence?.messages || []));
 
@@ -77,7 +77,7 @@ export default async function rapy(whatsapp: Whatsapp) {
       );
     }
 
-    const isRapyMentioned = content.toLowerCase().includes("rapy");
+    const isLunaMentioned = content.toLowerCase().includes("luna");
     const isGroupActive = () => {
       if (recentMessageTimes.length < 4) return "normal";
 
@@ -103,7 +103,7 @@ export default async function rapy(whatsapp: Whatsapp) {
     };
 
     const processResponse = async () => {
-      const timeSinceLastResponse = Date.now() - lastRapyResponseTime;
+      const timeSinceLastResponse = Date.now() - lastLunaResponseTime;
       const minTimeBetweenResponses = isGroupActive() === "very_active" ? 15 * 1000 : 8 * 1000;
       const activity = isGroupActive();
 
@@ -117,10 +117,10 @@ export default async function rapy(whatsapp: Whatsapp) {
             : 0
         )}s`,
         "tempo desde última resposta": `${Math.floor(timeSinceLastResponse / 1000)}s`,
-        "rapy mencionado": isRapyMentioned ? "sim" : "não",
+        "luna mencionado": isLunaMentioned ? "sim" : "não",
       });
 
-      if (timeSinceLastResponse < minTimeBetweenResponses && !isRapyMentioned) {
+      if (timeSinceLastResponse < minTimeBetweenResponses && !isLunaMentioned) {
         beautifulLogger.info("DEBOUNCE", "Resposta bloqueada por cooldown", {
           "tempo restante": `${Math.floor(
             (minTimeBetweenResponses - timeSinceLastResponse) / 1000
@@ -165,7 +165,7 @@ export default async function rapy(whatsapp: Whatsapp) {
           return;
         }
 
-        lastRapyResponseTime = Date.now();
+        lastLunaResponseTime = Date.now();
         beautifulLogger.separator("EXECUTANDO AÇÕES");
 
         for (const action of response) {
@@ -175,8 +175,8 @@ export default async function rapy(whatsapp: Whatsapp) {
               const message = action.message.text;
               await whatsapp.sendTextReply(sessionId, realMessageId, message);
               messages.push({
-                content: `(Rapy): ${message}`,
-                name: "Rapy",
+                content: `(Luna): ${message}`,
+                name: "Luna",
                 jid: "",
                 ia: true,
               });
@@ -190,8 +190,8 @@ export default async function rapy(whatsapp: Whatsapp) {
               const message = action.message.text;
               await whatsapp.sendText(sessionId, message);
               messages.push({
-                content: `(Rapy): ${message}`,
-                name: "Rapy",
+                content: `(Luna): ${message}`,
+                name: "Luna",
                 jid: "",
                 ia: true,
               });
@@ -205,8 +205,8 @@ export default async function rapy(whatsapp: Whatsapp) {
             const stickerPath = path.join(getHomeDir(), "stickers", action.sticker);
             await whatsapp.sendSticker(sessionId, stickerPath);
             messages.push({
-              content: `(Rapy): <usou o sticker ${action.sticker}>`,
-              name: "Rapy",
+              content: `(Luna): <usou o sticker ${action.sticker}>`,
+              name: "Luna",
               jid: "",
               ia: true,
             });
@@ -217,8 +217,8 @@ export default async function rapy(whatsapp: Whatsapp) {
             const audioPath = path.join(getHomeDir(), "audios", action.audio);
             await whatsapp.sendAudio(sessionId, audioPath);
             messages.push({
-              content: `(Rapy): <enviou o áudio ${action.audio}>`,
-              name: "Rapy",
+              content: `(Luna): <enviou o áudio ${action.audio}>`,
+              name: "Luna",
               jid: "",
               ia: true,
             });
@@ -229,8 +229,8 @@ export default async function rapy(whatsapp: Whatsapp) {
             const memePath = path.join(getHomeDir(), "memes", action.meme);
             await whatsapp.sendImage(sessionId, memePath);
             messages.push({
-              content: `(Rapy): <enviou o meme ${action.meme}>`,
-              name: "Rapy",
+              content: `(Luna): <enviou o meme ${action.meme}>`,
+              name: "Luna",
               jid: "",
               ia: true,
             });
@@ -240,8 +240,8 @@ export default async function rapy(whatsapp: Whatsapp) {
           } else if (action.poll) {
             await whatsapp.createPoll(sessionId, action.poll.question, action.poll.options);
             messages.push({
-              content: `(Rapy): <criou uma enquete: ${action.poll.question}>`,
-              name: "Rapy",
+              content: `(Luna): <criou uma enquete: ${action.poll.question}>`,
+              name: "Luna",
               jid: "",
               ia: true,
             });
@@ -251,8 +251,8 @@ export default async function rapy(whatsapp: Whatsapp) {
             });
           } else if (action.location) {
             messages.push({
-              content: `(Rapy): <enviou uma localização (${action.location.latitude}, ${action.location.longitude})>`,
-              name: "Rapy",
+              content: `(Luna): <enviou uma localização (${action.location.latitude}, ${action.location.longitude})>`,
+              name: "Luna",
               jid: "",
               ia: true,
             });
@@ -266,8 +266,8 @@ export default async function rapy(whatsapp: Whatsapp) {
             });
           } else if (action.contact) {
             messages.push({
-              content: `(Rapy): <enviou um contato (${action.contact.name} (${action.contact.cell}))>`,
-              name: "Rapy",
+              content: `(Luna): <enviou um contato (${action.contact.name} (${action.contact.cell}))>`,
+              name: "Luna",
               jid: "",
               ia: true,
             });
@@ -290,8 +290,8 @@ export default async function rapy(whatsapp: Whatsapp) {
       }
     };
 
-    if (isRapyMentioned) {
-      beautifulLogger.info("TRIGGER", "Rapy foi mencionado - processando imediatamente");
+    if (isLunaMentioned) {
+      beautifulLogger.info("TRIGGER", "Luna foi mencionado - processando imediatamente");
       await processResponse();
     } else {
       const debounceTime = getDebounceTime();

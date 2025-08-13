@@ -1,10 +1,10 @@
 import "dotenv/config";
 import Whatsapp from "./managers/Whatsapp";
-import rapy from "./rapy";
+import luna from "./luna";
 
 async function main() {
   const whatsapp = new Whatsapp();
-  await rapy(whatsapp);
+  await luna(whatsapp);
 }
 
 main();

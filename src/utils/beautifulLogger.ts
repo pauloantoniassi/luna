@@ -16,7 +16,7 @@ class BeautifulLogger {
   private logFile: string;
 
   constructor() {
-    this.logFile = path.join(getHomeDir(), "logs", "rapy.log");
+    this.logFile = path.join(getHomeDir(), "logs", "luna.log");
     this.ensureLogDirectory();
   }
 
@@ -139,7 +139,8 @@ class BeautifulLogger {
     const blue = "\x1b[44m\x1b[37m";
     const cyan = "\x1b[36m";
 
-    console.log(`\n${blue} 🤖 RAPY AI ${reset}`);
+    console.log(`
+${blue} 🤖 LUNA AI ${reset}`);
     console.log(
       `${cyan}${icon} ${step.toUpperCase()}${reset} ${typeof details === "string" ? details : ""}`
     );
