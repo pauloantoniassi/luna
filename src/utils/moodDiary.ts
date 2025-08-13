@@ -1,6 +1,6 @@
 import path from "path";
-import getHomeDir from "./getHomeDir";
 import * as fs from "fs";
+import getProjectRootDir from "./getProjectRootDir";
 
 type Mood =
   | "feliz"
@@ -105,7 +105,7 @@ function ensureMoodFileExists(filePath: string): boolean {
 
 export default function moodDiary(): Mood | null {
   try {
-    const filePath = path.join(getHomeDir(), ".moodDiary.txt");
+    const filePath = path.join(getProjectRootDir(), ".moodDiary.txt");
     const currentDate = getCurrentDate();
 
     if (!ensureMoodFileExists(filePath)) {

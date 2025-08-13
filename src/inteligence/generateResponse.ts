@@ -88,14 +88,14 @@ function calculateTokens(text: string): number {
   }
 }
 
-const stickersDir = path.join(getProjectRootDir(), "stickers");
+const stickersDir = path.join(getProjectRootDir(), "assets", "stickers");
 if (!fs.existsSync(stickersDir))
   throw new Error("Diretório de stickers não encontrado: " + stickersDir);
 const stickerOptions: string[] = fs
   .readdirSync(stickersDir)
   .filter((file) => file.endsWith(".webp"));
 
-const audiosDir = path.join(getProjectRootDir(), "audios");
+const audiosDir = path.join(getProjectRootDir(), "assets", "audios");
 if (!fs.existsSync(audiosDir)) throw new Error("Diretório de áudios não encontrado: " + audiosDir);
 const audioOptions: string[] = fs.readdirSync(audiosDir).filter((file) => file.endsWith(".mp3"));
 
@@ -171,7 +171,7 @@ export default async function generateResponse(
   ];
 
   const inputText = inputMessages.map((msg) => msg.content).join("\n");
-  const inputTokens = calculateTokens(inputText);
+  const inputTokens = calculateTokens(inputText); // TODO: Remove - use the response from openai which contains the actual token usage
 
   beautifulLogger.aiGeneration("tokens", {
     "tokens de entrada": inputTokens,
@@ -282,7 +282,7 @@ export default async function generateResponse(
     messages: inputMessages,
     response_format: responseSchema,
     temperature: 0.8,
-    max_tokens: 100,
+    max_completion_tokens: 100,
   });
 
   const content = response.choices[0]?.message?.content;
@@ -293,7 +293,7 @@ export default async function generateResponse(
   }
 
   // Calcular tokens de saída
-  const outputTokens = calculateTokens(content);
+  const outputTokens = calculateTokens(content); // TODO: Remove - use the response from openai which contains the actual token usage
   const totalTokens = inputTokens + outputTokens;
 
   // Calcular custo

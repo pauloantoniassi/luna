@@ -202,7 +202,7 @@ export default async function luna(whatsapp: Whatsapp) {
               });
             }
           } else if (action.sticker) {
-            const stickerPath = path.join(getProjectRootDir(), "stickers", action.sticker);
+            const stickerPath = path.join(getProjectRootDir(), "assets", "stickers", action.sticker);
             await whatsapp.sendSticker(sessionId, stickerPath);
             messages.push({
               content: `(Luna): <usou o sticker ${action.sticker}>`,
@@ -214,7 +214,7 @@ export default async function luna(whatsapp: Whatsapp) {
               arquivo: action.sticker,
             });
           } else if (action.audio) {
-            const audioPath = path.join(getProjectRootDir(), "audios", action.audio);
+            const audioPath = path.join(getProjectRootDir(), "assets", "audios", action.audio);
             await whatsapp.sendAudio(sessionId, audioPath);
             messages.push({
               content: `(Luna): <enviou o áudio ${action.audio}>`,

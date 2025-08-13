@@ -126,7 +126,7 @@ export default async function generateSummary(
     ],
     response_format: responseSchema,
     temperature: 0.3,
-    max_tokens: 1000,
+    max_completion_tokens: 1000,
   });
 
   const content = response.choices[0]?.message?.content;

@@ -11,32 +11,30 @@
     "url": "git+https://github.com/pauloantoniassi/luna.git"
   },
   "license": "MIT",
-  "author": "kaua.dev.br",
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
-    "dev": "ts-node-dev ./src/index.ts",
+    "dev": "ts-node ./src/index.ts",
     "build": "node build.mjs",
     "start": "node dist/bundle.js",
     "format:stickers": "ts-node ./src/scripts/formatStickers.ts"
   },
   "devDependencies": {
+    "@types/dotenv-safe": "^8.1.6",
     "@types/node": "^24.2.0",
     "@types/qrcode-terminal": "^0.12.2",
     "esbuild": "^0.25.8",
-    "sharp": "^0.32.6",
-    "ts-node-dev": "^2.0.0",
+    "ts-node": "^10.9.2",
     "typescript": "^5.9.2"
   },
   "dependencies": {
     "@whiskeysockets/baileys": "^6.7.18",
-    "dotenv": "^17.2.1",
-    "fs": "^0.0.1-security",
-    "openai": "^5.12.0",
+    "dotenv": "^17",
+    "openai": "^5",
     "pino": "^9.7.0",
     "qrcode-terminal": "^0.12.0",
+    "sharp": "^0.32.6",
     "tiktoken": "^1.0.21",
-    "ts-node": "^10.9.2",
     "zod": "^3.25.76"
   }
 }

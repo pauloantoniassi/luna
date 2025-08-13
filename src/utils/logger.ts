@@ -44,7 +44,8 @@ export class LoggerConfig {
     }
   }
 
-  static forBaileys(level: "silent" | "error" | "warn" | "info" | "debug" | "trace" = "error") {
+  static forBaileys() {
+    const level = process.env.NODE_ENV === "production" ? "error" : "warn"
     return P({
       level,
       timestamp: () => `,"time":"${new Date().toJSON()}"`,
@@ -55,6 +56,4 @@ export class LoggerConfig {
 }
 
 export const appLogger = LoggerConfig.auto();
-export const whatsappLogger = LoggerConfig.forBaileys(
-  process.env.NODE_ENV === "production" ? "error" : "warn"
-);
+export const whatsappLogger = LoggerConfig.forBaileys();

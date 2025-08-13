@@ -9,7 +9,7 @@ import {
 } from "@whiskeysockets/baileys";
 import { Boom } from "@hapi/boom";
 import qrcode from "qrcode-terminal";
-import { LoggerConfig } from "../utils/logger";
+import {appLogger, LoggerConfig} from "../utils/logger";
 import debounce from "../utils/debounce";
 import fs from "fs";
 import path from "path";
@@ -31,12 +31,17 @@ export default class Whatsapp {
   private sock: WASocket | undefined;
   private onMessage?: MessageHandler;
   private presence: WAPresence = "available";
+  private readonly authPath: string;
+
+  constructor() {
+    this.authPath = path.join(getProjectRootDir(),"user-data/whatsapp/auth");
+  }
 
   async init() {
-    const { state, saveCreds } = await useMultiFileAuthState("auth");
+    const { state, saveCreds } = await useMultiFileAuthState(this.authPath);
     this.sock = makeWASocket({
       auth: state,
-      logger: LoggerConfig.forBaileys(process.env.NODE_ENV === "production" ? "error" : "warn"),
+      logger: LoggerConfig.forBaileys(),
     });
 
     this.sock.ev.on("creds.update", saveCreds);
@@ -58,11 +63,11 @@ export default class Whatsapp {
           this.init();
         } else {
           console.log("Desconectado. Faça login novamente.");
-          fs.rmSync(path.join(getProjectRootDir(), "auth"), { recursive: true, force: true });
+          fs.rmSync(this.authPath, { recursive: true, force: true });
         }
       } else if (connection === "open") {
         console.log("✅ Conectado ao WhatsApp");
-        this.debaunceOffline();
+        this.debounceOffline();
       }
     });
 
@@ -74,7 +79,10 @@ export default class Whatsapp {
         const content = msg.message as WAMessageContent;
         if (!content || !sessionId) return;
 
-        if (!sessionId.endsWith("@g.us")) return;
+        if (!sessionId.endsWith("@g.us")) {
+          appLogger.warn('Mensagem recebida fora de grupo, ignorando.', { from: sessionId });
+          return;
+        }
 
         let senderInfo: { jid: string; name?: string } | undefined;
 
@@ -85,7 +93,7 @@ export default class Whatsapp {
           };
         }
 
-        this.debaunceOffline();
+        this.debounceOffline();
 
         if (this.presence === "unavailable") {
           await this.sock!.sendPresenceUpdate("available");
@@ -117,7 +125,7 @@ export default class Whatsapp {
     this.onMessage = handler;
   }
 
-  private debaunceOffline() {
+  private debounceOffline() {
     debounce(
       async () => {
         try {

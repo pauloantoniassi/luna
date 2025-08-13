@@ -1,0 +1,11 @@
+services:
+  luna:
+    build: .
+    image: luna
+    container_name: luna
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - ./whatsapp_session:/app/whatsapp_session
+      - ./user-data:/app/user-data
