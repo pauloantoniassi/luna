@@ -47,6 +47,7 @@ Luna não é apenas um bot — é um novo membro do seu grupo. Ela **analisa, en
 - **Detecção de Agitação** no grupo.
 - **Debounce Inteligente** para evitar spam.
 - **Logs Detalhados** com custo estimado de cada resposta.
+- **Humor diário** para as conversas do grupo.
 
 ---
 
