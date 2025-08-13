@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { z } from "zod";
-import getHomeDir from "./getHomeDir";
+import getProjectRootDir from "./getProjectRootDir";
 
 const DataSchema = z.object({
   summary: z.string(),
@@ -18,7 +18,7 @@ const DataSchema = z.object({
 export type Data = z.infer<typeof DataSchema>;
 
 export default function database() {
-  const file = path.join(getHomeDir(), "database", "data.json");
+  const file = path.join(getProjectRootDir(), "database", "data.json");
   const directory = path.dirname(file);
 
   if (!fs.existsSync(directory)) {

@@ -3,7 +3,7 @@ import fs from "fs";
 import path from "path";
 
 const inputDir: string = "./real-stickers";
-const outputDir: string = "./stickers";
+const outputDir: string = "./assets/stickers";
 
 if (!fs.existsSync(outputDir)) {
   fs.mkdirSync(outputDir);

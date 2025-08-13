@@ -13,7 +13,7 @@ import { LoggerConfig } from "../utils/logger";
 import debounce from "../utils/debounce";
 import fs from "fs";
 import path from "path";
-import getHomeDir from "../utils/getHomeDir";
+import getProjectRootDir from "../utils/getProjectRootDir";
 
 export type MessageHandler = (
   sessionId: string,
@@ -58,7 +58,7 @@ export default class Whatsapp {
           this.init();
         } else {
           console.log("Desconectado. Faça login novamente.");
-          fs.rmSync(path.join(getHomeDir(), "auth"), { recursive: true, force: true });
+          fs.rmSync(path.join(getProjectRootDir(), "auth"), { recursive: true, force: true });
         }
       } else if (connection === "open") {
         console.log("✅ Conectado ao WhatsApp");

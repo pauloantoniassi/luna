@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { z } from "zod";
-import getHomeDir from "./getHomeDir";
+import getProjectRootDir from "./getProjectRootDir";
 
 const DataSchema = z.array(
   z.object({
@@ -17,7 +17,7 @@ function convertToLogFormat(data: Data[number]): string {
 }
 
 export default function log() {
-  const file = path.join(getHomeDir(), "database", "logs.txt");
+  const file = path.join(getProjectRootDir(), "database", "logs.txt");
   const directory = path.dirname(file);
 
   if (!fs.existsSync(directory)) {

@@ -4,7 +4,7 @@ import Whatsapp from "./managers/Whatsapp";
 import database from "./utils/database";
 import debounce from "./utils/debounce";
 import generateSummary from "./inteligence/generateSummary";
-import getHomeDir from "./utils/getHomeDir";
+import getProjectRootDir from "./utils/getProjectRootDir";
 import log from "./utils/log";
 import isPossibleResponse from "./inteligence/isPossibleResponse";
 import beautifulLogger from "./utils/beautifulLogger";
@@ -202,7 +202,7 @@ export default async function luna(whatsapp: Whatsapp) {
               });
             }
           } else if (action.sticker) {
-            const stickerPath = path.join(getHomeDir(), "stickers", action.sticker);
+            const stickerPath = path.join(getProjectRootDir(), "stickers", action.sticker);
             await whatsapp.sendSticker(sessionId, stickerPath);
             messages.push({
               content: `(Luna): <usou o sticker ${action.sticker}>`,
@@ -214,7 +214,7 @@ export default async function luna(whatsapp: Whatsapp) {
               arquivo: action.sticker,
             });
           } else if (action.audio) {
-            const audioPath = path.join(getHomeDir(), "audios", action.audio);
+            const audioPath = path.join(getProjectRootDir(), "audios", action.audio);
             await whatsapp.sendAudio(sessionId, audioPath);
             messages.push({
               content: `(Luna): <enviou o áudio ${action.audio}>`,
@@ -226,7 +226,7 @@ export default async function luna(whatsapp: Whatsapp) {
               arquivo: action.audio,
             });
           } else if (action.meme) {
-            const memePath = path.join(getHomeDir(), "memes", action.meme);
+            const memePath = path.join(getProjectRootDir(), "assets", "memes", action.meme);
             await whatsapp.sendImage(sessionId, memePath);
             messages.push({
               content: `(Luna): <enviou o meme ${action.meme}>`,

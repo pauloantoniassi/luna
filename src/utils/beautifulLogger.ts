@@ -1,6 +1,6 @@
 import * as fs from "fs";
 import * as path from "path";
-import getHomeDir from "./getHomeDir";
+import getProjectRootDir from "./getProjectRootDir";
 
 type LogLevel = "INFO" | "WARN" | "ERROR" | "SUCCESS" | "DEBUG";
 
@@ -16,7 +16,7 @@ class BeautifulLogger {
   private logFile: string;
 
   constructor() {
-    this.logFile = path.join(getHomeDir(), "logs", "luna.log");
+    this.logFile = path.join(getProjectRootDir(), "logs", "luna.log");
     this.ensureLogDirectory();
   }
 

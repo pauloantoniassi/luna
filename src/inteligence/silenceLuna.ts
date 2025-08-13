@@ -1,5 +1,5 @@
 import { proto } from "@whiskeysockets/baileys";
-import getHomeDir from "../utils/getHomeDir";
+import getProjectRootDir from "../utils/getProjectRootDir";
 import path from "path";
 import Whatsapp from "../managers/Whatsapp";
 import { Message } from "./generateResponse";
@@ -18,7 +18,7 @@ export default async function silenceLuna(
   const messageId = msg.key.id;
 
   if (content === "/luna-cala-boca") {
-    const stickerPath = path.join(getHomeDir(), "stickers", "silenciado.webp");
+    const stickerPath = path.join(getProjectRootDir(), "stickers", "silenciado.webp");
     await whatsapp.sendSticker(sessionId, stickerPath);
     messages.push({
       content: `(Luna): <usou o sticker silenciado.webp>`,
@@ -51,7 +51,7 @@ export default async function silenceLuna(
   }
 
   if (content === "/luna-liberado") {
-    const stickerPath = path.join(getHomeDir(), "stickers", "livre-para-falar.webp");
+    const stickerPath = path.join(getProjectRootDir(), "assets", "stickers", "livre-para-falar.webp");
     await whatsapp.sendSticker(sessionId, stickerPath);
     messages.push({
       content: `(Luna): <usou o sticker livre-para-falar.webp>`,

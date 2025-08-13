@@ -1,6 +1,6 @@
 import path from "path";
 
-export default function getHomeDir() {
+export default function getProjectRootDir() {
   const baseDir = path.resolve(__dirname, "../");
 
   if (

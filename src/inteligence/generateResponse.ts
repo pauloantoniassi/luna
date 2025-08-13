@@ -5,7 +5,7 @@ import PERSONALITY_PROMPT from "../constants/PERSONALITY_PROMPT";
 import { encoding_for_model } from "tiktoken";
 import * as fs from "fs";
 import path from "path";
-import getHomeDir from "../utils/getHomeDir";
+import getProjectRootDir from "../utils/getProjectRootDir";
 import beautifulLogger from "../utils/beautifulLogger";
 
 export type Message = {
@@ -88,18 +88,18 @@ function calculateTokens(text: string): number {
   }
 }
 
-const stickersDir = path.join(getHomeDir(), "stickers");
+const stickersDir = path.join(getProjectRootDir(), "stickers");
 if (!fs.existsSync(stickersDir))
   throw new Error("Diretório de stickers não encontrado: " + stickersDir);
 const stickerOptions: string[] = fs
   .readdirSync(stickersDir)
   .filter((file) => file.endsWith(".webp"));
 
-const audiosDir = path.join(getHomeDir(), "audios");
+const audiosDir = path.join(getProjectRootDir(), "audios");
 if (!fs.existsSync(audiosDir)) throw new Error("Diretório de áudios não encontrado: " + audiosDir);
 const audioOptions: string[] = fs.readdirSync(audiosDir).filter((file) => file.endsWith(".mp3"));
 
-const memesDir = path.join(getHomeDir(), "memes");
+const memesDir = path.join(getProjectRootDir(), "assets", "memes");
 if (!fs.existsSync(memesDir)) throw new Error("Diretório de memes não encontrado: " + memesDir);
 const memeOptions: string[] = fs.readdirSync(memesDir).filter((file) => file.endsWith(".jpg"));
 
