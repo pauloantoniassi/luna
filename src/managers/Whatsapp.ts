@@ -9,11 +9,16 @@ import {
 } from "@whiskeysockets/baileys";
 import { Boom } from "@hapi/boom";
 import qrcode from "qrcode-terminal";
-import {appLogger, LoggerConfig} from "../utils/logger";
+import { appLogger, LoggerConfig } from "../utils/logger";
 import debounce from "../utils/debounce";
 import fs from "fs";
 import path from "path";
 import getProjectRootDir from "../utils/getProjectRootDir";
+import NodeCache from "node-cache";
+import { AppDataSource } from "../services/database";
+import { Chat } from "../entities/Chat";
+import { Contact } from "../entities/Contact";
+import { Message } from "../entities/Message";
 
 export type MessageHandler = (
   sessionId: string,
@@ -26,15 +31,18 @@ export type MessageHandler = (
 ) => void;
 
 const OFFLINE_DELAY_MS = 60_000;
+const CACHE_TTL_SECONDS = 86400; // 24 hours
 
 export default class Whatsapp {
   private sock: WASocket | undefined;
   private onMessage?: MessageHandler;
   private presence: WAPresence = "available";
   private readonly authPath: string;
+  private chatCache = new NodeCache({ stdTTL: CACHE_TTL_SECONDS });
+  private contactCache = new NodeCache({ stdTTL: CACHE_TTL_SECONDS });
 
   constructor() {
-    this.authPath = path.join(getProjectRootDir(),"user-data/whatsapp/auth");
+    this.authPath = path.join(getProjectRootDir(), "user-data/whatsapp/auth");
   }
 
   async init() {
@@ -46,7 +54,7 @@ export default class Whatsapp {
 
     this.sock.ev.on("creds.update", saveCreds);
 
-    this.sock.ev.on("connection.update", (update) => {
+    this.sock.ev.on("connection.update", async (update) => {
       const { connection, lastDisconnect, qr } = update;
 
       if (qr) {
@@ -58,7 +66,8 @@ export default class Whatsapp {
 
       if (connection === "close") {
         const shouldReconnect =
-          (lastDisconnect?.error as Boom)?.output?.statusCode !== DisconnectReason.loggedOut;
+          (lastDisconnect?.error as Boom)?.output?.statusCode !==
+          DisconnectReason.loggedOut;
         if (shouldReconnect) {
           this.init();
         } else {
@@ -67,20 +76,42 @@ export default class Whatsapp {
         }
       } else if (connection === "open") {
         console.log("✅ Conectado ao WhatsApp");
+
+        // --- DB LOGIC: REGISTER ME ---
+        try {
+          const meId = this.sock?.user?.id;
+          if (meId) {
+            const contactRepository = AppDataSource.getRepository(Contact);
+            let meContact = await contactRepository.findOne({ where: { waContactId: meId } });
+            if (!meContact) {
+              meContact = contactRepository.create({
+                waContactId: meId,
+                pushName: "Luna (Eu)",
+              });
+              await contactRepository.save(meContact);
+              appLogger.info("Contato 'eu' registrado no banco de dados.");
+            }
+            // ADICIONADO: Cachear o contato do bot
+            if (meContact) this.contactCache.set(meId, meContact);
+          }
+        } catch (dbError) {
+          appLogger.error({ error: dbError }, "Erro ao registrar 'eu' no banco de dados.");
+        }
+        // --- END DB LOG ---
+
         this.debounceOffline();
       }
     });
 
     this.sock!.ev.on("messages.upsert", async ({ messages, type }) => {
-      if (type !== "notify") return;
       for (const msg of messages) {
-        const sessionId = msg.key.remoteJid;
+        const waChatId = msg.key.remoteJid;
 
         const content = msg.message as WAMessageContent;
-        if (!content || !sessionId) return;
+        if (!content || !waChatId) return;
 
-        if (!sessionId.endsWith("@g.us")) {
-          appLogger.warn('Mensagem recebida fora de grupo, ignorando.', { from: sessionId });
+        if (!waChatId.endsWith("@g.us")) {
+          appLogger.warn("Mensagem recebida fora de grupo, ignorando.", { from: waChatId });
           return;
         }
 
@@ -93,7 +124,78 @@ export default class Whatsapp {
           };
         }
 
+        // --- DB & CACHE LOG ---
+        try {
+          const chatRepository = AppDataSource.getRepository(Chat);
+          const contactRepository = AppDataSource.getRepository(Contact);
+          const messageRepository = AppDataSource.getRepository(Message);
+
+          const waChatId = msg.key.remoteJid!;
+          const waAuthorId = (msg.key.fromMe ? this.sock?.user?.id : msg.key.participant) || waChatId;
+
+          // 1. Get/Find/Create Chat from cache or DB
+          let chat: Chat | null = this.chatCache.get<Chat>(waChatId) || null;
+          if (!chat) {
+            chat = await chatRepository.findOneBy({ waChatId }); // Find
+            if (!chat) { // If not found, create
+                chat = chatRepository.create({ waChatId });
+                await chatRepository.save(chat);
+            }
+            if (chat) this.chatCache.set(waChatId, chat);
+          }
+
+          // 2. Get/Find/Create Author from cache or DB
+          let author: Contact | null = this.contactCache.get<Contact>(waAuthorId) || null;
+          if (!author) {
+            author = await contactRepository.findOneBy({ waContactId: waAuthorId }); // Find
+            if (!author) { // If not found, create
+                author = contactRepository.create({
+                    waContactId: waAuthorId,
+                    pushName: msg.pushName,
+                });
+                await contactRepository.save(author);
+            }
+            if (author) this.contactCache.set(waAuthorId, author);
+          }
+
+          // Add author to chat participants list if not already there.
+          if (chat && author) {
+            await AppDataSource.createQueryBuilder()
+                .insert()
+                .into("chat_participants") // Nome da tabela de junção
+                .values({
+                    chatId: chat.id,
+                    contactId: author.id
+                })
+                .orIgnore() // Isso se traduz para ON CONFLICT DO NOTHING no SQLite
+                .execute();
+          }
+
+          // 3. Save Message
+          const messageBody = msg.message?.conversation || msg.message?.extendedTextMessage?.text || "";
+          if (msg.key.id && messageBody && chat && author) {
+            const newMessage = messageRepository.create({
+              waMessageId: msg.key.id,
+              body: messageBody,
+              fromMe: msg.key.fromMe || false,
+              timestamp: new Date(Number(msg.messageTimestamp) * 1000),
+              chat: chat,
+              author: author,
+            });
+            await messageRepository.save(newMessage);
+          }
+        } catch (dbError) {
+          appLogger.error({ error: dbError }, "Erro ao salvar mensagem no banco de dados.");
+        }
+        // --- END DB & CACHE LOG ---
+
+        // Ignore messages that are not notifications                                                                                                                                  │
+        // Messages that are "append" are for history only                                                                                                                             │
+        if (type !== "notify") continue;
+
         this.debounceOffline();
+
+        if(msg.key.fromMe) continue; // Ignore mensagens enviadas pelo próprio bot
 
         if (this.presence === "unavailable") {
           await this.sock!.sendPresenceUpdate("available");
@@ -101,13 +203,13 @@ export default class Whatsapp {
         }
 
         if (content.conversation || content.extendedTextMessage) {
-          this.onMessage?.(sessionId, msg, "text", senderInfo);
+          this.onMessage?.(waChatId, msg, "text", senderInfo);
         } else if (content.imageMessage) {
-          this.onMessage?.(sessionId, msg, "image", senderInfo);
+          this.onMessage?.(waChatId, msg, "image", senderInfo);
         } else if (content.audioMessage) {
-          this.onMessage?.(sessionId, msg, "audio", senderInfo);
+          this.onMessage?.(waChatId, msg, "audio", senderInfo);
         } else if (content.documentMessage) {
-          this.onMessage?.(sessionId, msg, "document", senderInfo);
+          this.onMessage?.(waChatId, msg, "document", senderInfo);
         }
       }
     });

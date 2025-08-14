@@ -30,11 +30,15 @@
   "dependencies": {
     "@whiskeysockets/baileys": "^6.7.18",
     "dotenv": "^17",
+    "node-cache": "^5.1.2",
     "openai": "^5",
     "pino": "^9.7.0",
     "qrcode-terminal": "^0.12.0",
+    "reflect-metadata": "^0.2.2",
     "sharp": "^0.32.6",
+    "sqlite3": "^5.1.7",
     "tiktoken": "^1.0.21",
+    "typeorm": "^0.3.25",
     "zod": "^3.25.76"
   }
 }
