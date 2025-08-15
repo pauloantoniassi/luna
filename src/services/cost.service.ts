@@ -9,9 +9,21 @@ export class CostService {
     private chatCostRepository: Repository<ChatCost>;
     private chatRepository: Repository<Chat>;
 
+    private static instance: CostService;
+
     constructor() {
         this.chatCostRepository = AppDataSource.getRepository(ChatCost);
         this.chatRepository = AppDataSource.getRepository(Chat);
+    }
+
+    /**
+     * @deprecated Created only for backward compatibility.
+     */
+    static getInstance(): CostService {
+        if (!CostService.instance) {
+            CostService.instance = new CostService();
+        }
+        return CostService.instance;
     }
 
     public async recordLlmChatUsage(
@@ -43,7 +55,15 @@ export class CostService {
 
             const inputTokens = usage.prompt_tokens || 0;
             const outputTokens = usage.completion_tokens || 0;
-            const cost = usage.cost || 0; // Cost is available in the usage object if the provider is OpenRouter
+
+            // Cost is available in the usage object if the provider is OpenRouter
+            // This calculation converts from dollars to cents and then to scaled integer (100 million = 1 USD)
+            const cost = usage.cost ? usage.cost * 100_000_000 : 0;
+
+            appLogger.debug({
+                cost,
+                originalCost: usage.cost,
+            }, "Calculating cost for LLM usage");
 
             let chatCost = await this.chatCostRepository.findOne({
                 where: {
@@ -73,7 +93,7 @@ export class CostService {
             }
 
             await this.chatCostRepository.save(chatCost);
-            appLogger.debug({ chatId, modelName, operation }, `Custo de LLM registrado`);
+            appLogger.debug({ chatId, modelName, operation, cost }, `Custo de LLM registrado`);
         } catch (error) {
             appLogger.error({ error }, `Erro ao registrar custo de LLM para o chat ${chatId}.`);
         }

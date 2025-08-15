@@ -17,7 +17,7 @@ export class LoggerConfig {
 
   static development() {
     return P({
-      level: "warn",
+      level: "trace",
       timestamp: () => `,"time":"${new Date().toJSON()}"`,
     });
   }

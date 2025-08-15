@@ -29,7 +29,7 @@ export class ChatCost {
     @Column({ type: "int", default: 0 })
     outputTokens!: number;
 
-    @Column({ type: "bigint", default: 0, comment: '10 milhões = 0,01 USD' }) // Calculated cost for this specific entry, stored as scaled integer
+    @Column({ type: "bigint", default: 0 }) // stored as scaled integer, 100_000_000 = 1 USD
     cost!: number;
 
     @CreateDateColumn()

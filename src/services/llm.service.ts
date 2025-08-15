@@ -44,6 +44,16 @@ export class LlmService {
    return new LlmService();
   }
 
+  private getModel(model: AI_MODELS | ChatModel): string {
+    if (model === AI_MODELS.DEFAULT) {
+      return process.env.AI_MODEL || "gpt-4.1-mini";
+    }
+    if (model === AI_MODELS.WEAK) {
+      return process.env.AI_WEAK_MODEL || "gpt-4.1-nano";
+    }
+    return model;
+  }
+
   async callText<ResponseType extends object>(
     messages: Array<ChatCompletionMessageParam>,
     responseSchema: ResponseFormatJSONSchema.JSONSchema,
@@ -52,7 +62,7 @@ export class LlmService {
     safety_identifier?: string
   ): Promise<LlmResponseType<ResponseType>> {
     const response: OpenAPIResponseWithOpenRouterFields = await LlmService.openai.chat.completions.create({
-      model,
+      model: this.getModel(model),
       messages: [
         ...(includePersona ? [{
           role: "system" as const,

@@ -1,10 +1,14 @@
 import {ChatCompletionMessageParam} from "openai/resources";
-import {LlmService} from "../services/llm.service";
+import {AI_MODELS, LlmService} from "../services/llm.service";
 import { Data } from "../utils/database";
 import PERSONALITY_PROMPT from "../constants/PERSONALITY_PROMPT";
 import beautifulLogger from "../utils/beautifulLogger";
 import {AIChatResponseType, AIChatResponseZod} from "../models/ai-chat-response.dto";
 import {z} from "zod";
+import {CostService} from "../services/cost.service";
+import {AppDataSource} from "../services/database";
+import {Chat} from "../entities/Chat";
+import {appLogger} from "../utils/logger";
 
 export type Message = {
   content: string;
@@ -15,16 +19,10 @@ export type Message = {
 
 export default async function generateResponse(
   data: Data,
-  messages: Message
+  messages: Message,
+  waChatId: string,
 ): Promise<AIChatResponseType> {
   beautifulLogger.aiGeneration("start", "Iniciando geração de resposta...");
-  const AI_MODEL = process.env.AI_MODEL;
-  // TODO: Use getConfig
-
-  if(!AI_MODEL) {
-    beautifulLogger.aiGeneration("error", "Variável de ambiente AI_MODEL não está definida");
-    throw new Error("Variável de ambiente AI_MODEL não está definida");
-  }
 
   const uniqueMessages = messages.filter((message, index, array) => {
     return !array.some(
@@ -36,7 +34,7 @@ export default async function generateResponse(
   });
 
   const messagesMapped: string = uniqueMessages
-    .map((message, i) => `${i + 1} - ${message.content}`)
+    .map((message, i) => `${i + 1} (JID: ${ message.jid }) - ${message.content}`)
     .join("\n");
 
   beautifulLogger.aiGeneration("processing", {
@@ -80,6 +78,7 @@ export default async function generateResponse(
 
   const inputMessages: ChatCompletionMessageParam[] = [
     { role: "system", content: PERSONALITY_PROMPT },
+    // TODO: Confirm if this role is correct and makes sense.
     { role: "assistant", content: contextData },
     {
       role: "user",
@@ -92,7 +91,15 @@ export default async function generateResponse(
   const response = await LlmService.getInstance().callText(
     inputMessages,
     { schema: z.toJSONSchema(AIChatResponseZod), name: "ai_chat_response" }
-  )
+  );
+
+  const chat = await AppDataSource.getRepository(Chat).findOneBy({ waChatId });
+  if (chat) {
+     await CostService.getInstance().recordLlmChatUsage(chat, "generateResponse", response.usage, AI_MODELS.DEFAULT);
+  } else {
+    appLogger.warn({waChatId}, `Chat with waChatId ${waChatId} not found. Skipping cost recording.`);
+  }
+
 
   beautifulLogger.aiGeneration("cost", {
     "tokens entrada": response.usage?.prompt_tokens,
@@ -117,7 +124,7 @@ export default async function generateResponse(
       actions: parsedResponse.actions
     };
   } catch (error) {
-    console.error("Erro ao fazer parse da resposta JSON:", error);
+    console.error("Erro ao fazer parse da resposta JSON:", error, response.response);
     throw new Error("Resposta da IA não está no formato JSON válido");
   }
 }

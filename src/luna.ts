@@ -20,13 +20,13 @@ export default async function luna(whatsapp: Whatsapp) {
   let isGenerating = false;
   let recentMessageTimes: number[] = [];
 
-  whatsapp.registerMessageHandler(async (sessionId, msg, type, senderInfo) => {
+  whatsapp.registerMessageHandler(async (waChatId, msg, type, senderInfo) => {
     if (type !== "text") return;
     const content = msg.message?.conversation || msg.message?.extendedTextMessage?.text;
     if (!content || !senderInfo) return;
     const messageId = msg.key.id;
 
-    const silence = await silenceLuna(whatsapp, sessionId, msg, messages, silenced);
+    const silence = await silenceLuna(whatsapp, waChatId, msg, messages, silenced);
     silenced = silence?.silenced;
     messages.push(...(silence?.messages || []));
 
@@ -141,9 +141,9 @@ export default async function luna(whatsapp: Whatsapp) {
         }
 
         beautifulLogger.success("POSSIBILIDADE", "Resposta aprovada por: " + reason);
-        await whatsapp.setTyping(sessionId);
+        await whatsapp.setTyping(waChatId);
 
-        const result = await generateResponse(db.getAll(), messages);
+        const result = await generateResponse(db.getAll(), messages, waChatId);
         const response = result.actions;
 
         try {
@@ -161,7 +161,7 @@ export default async function luna(whatsapp: Whatsapp) {
         if (response.length === 0) {
           beautifulLogger.warn("RESPOSTA", "Nenhuma ação foi gerada pela IA");
           isGenerating = false;
-          await whatsapp.pauseTyping(sessionId);
+          await whatsapp.pauseTyping(waChatId);
           return;
         }
 
@@ -173,7 +173,7 @@ export default async function luna(whatsapp: Whatsapp) {
             const realMessageId = messagesIds.get(action.message.reply ?? "not-is-message");
             if (action.message.reply && realMessageId) {
               const message = action.message.text;
-              await whatsapp.sendTextReply(sessionId, realMessageId, message);
+              await whatsapp.sendTextReply(waChatId, realMessageId, message);
               messages.push({
                 content: `(Luna): ${message}`,
                 name: "Luna",
@@ -188,7 +188,7 @@ export default async function luna(whatsapp: Whatsapp) {
               });
             } else {
               const message = action.message.text;
-              await whatsapp.sendText(sessionId, message);
+              await whatsapp.sendText(waChatId, message);
               messages.push({
                 content: `(Luna): ${message}`,
                 name: "Luna",
@@ -203,7 +203,7 @@ export default async function luna(whatsapp: Whatsapp) {
             }
           } else if (action.type === "sticker") {
             const stickerPath = path.join(getProjectRootDir(), "assets", "stickers", action.sticker);
-            await whatsapp.sendSticker(sessionId, stickerPath);
+            await whatsapp.sendSticker(waChatId, stickerPath);
             messages.push({
               content: `(Luna): <usou o sticker ${action.sticker}>`,
               name: "Luna",
@@ -215,7 +215,7 @@ export default async function luna(whatsapp: Whatsapp) {
             });
           } else if (action.type === "audio") {
             const audioPath = path.join(getProjectRootDir(), "assets", "audios", action.audio);
-            await whatsapp.sendAudio(sessionId, audioPath);
+            await whatsapp.sendAudio(waChatId, audioPath);
             messages.push({
               content: `(Luna): <enviou o áudio ${action.audio}>`,
               name: "Luna",
@@ -227,7 +227,7 @@ export default async function luna(whatsapp: Whatsapp) {
             });
           } else if (action.type === "meme") {
             const memePath = path.join(getProjectRootDir(), "assets", "memes", action.meme);
-            await whatsapp.sendImage(sessionId, memePath);
+            await whatsapp.sendImage(waChatId, memePath);
             messages.push({
               content: `(Luna): <enviou o meme ${action.meme}>`,
               name: "Luna",
@@ -238,7 +238,7 @@ export default async function luna(whatsapp: Whatsapp) {
               arquivo: action.meme,
             });
           } else if (action.type === "poll") {
-            await whatsapp.createPoll(sessionId, action.poll.question, action.poll.options);
+            await whatsapp.createPoll(waChatId, action.poll.question, action.poll.options);
             messages.push({
               content: `(Luna): <criou uma enquete: ${action.poll.question}>`,
               name: "Luna",
@@ -257,7 +257,7 @@ export default async function luna(whatsapp: Whatsapp) {
               ia: true,
             });
             await whatsapp.sendLocation(
-              sessionId,
+              waChatId,
               action.location.latitude,
               action.location.longitude
             );
@@ -271,7 +271,7 @@ export default async function luna(whatsapp: Whatsapp) {
               jid: "",
               ia: true,
             });
-            await whatsapp.sendContact(sessionId, action.contact.cell, action.contact.name);
+            await whatsapp.sendContact(waChatId, action.contact.cell, action.contact.name);
             beautifulLogger.actionSent("contact", {
               nome: action.contact.name,
               telefone: action.contact.cell,
@@ -283,7 +283,7 @@ export default async function luna(whatsapp: Whatsapp) {
       } catch (error) {
         beautifulLogger.error("GERAÇÃO", "Erro ao gerar resposta", error);
       } finally {
-        await whatsapp.setOnline(sessionId);
+        await whatsapp.setOnline(waChatId);
         isGenerating = false;
         beautifulLogger.success("FINALIZAÇÃO", "Processo de resposta finalizado");
         beautifulLogger.separator("FIM");
