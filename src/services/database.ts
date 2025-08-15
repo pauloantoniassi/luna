@@ -5,6 +5,7 @@ import { Chat } from "../entities/Chat";
 import { Contact } from "../entities/Contact";
 import { Message } from "../entities/Message";
 import { ChatSummary } from "../entities/ChatSummary"; // Added import
+import { ChatCost } from "../entities/ChatCost"; // Added import
 
 const rootDir = getProjectRootDir();
 
@@ -27,7 +28,8 @@ export const AppDataSource = new DataSource({
         Chat,
         Contact,
         Message,
-        ChatSummary
+        ChatSummary,
+        ChatCost // Added ChatCost
     ],
     migrations: [],
     subscribers: [],

@@ -2,6 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateCol
 import { Message } from "./Message";
 import { Contact } from "./Contact";
 import { ChatSummary } from "./ChatSummary"; // Updated import
+import { ChatCost } from "./ChatCost"; // Added import
 
 @Entity({ name: "chats" })
 export class Chat {
@@ -25,6 +26,9 @@ export class Chat {
 
     @OneToMany(() => ChatSummary, chatSummary => chatSummary.chat) // Updated relationship
     checkpoints!: ChatSummary[]; // Updated relationship
+
+    @OneToMany(() => ChatCost, chatCost => chatCost.chat) // Added relationship
+    chatCosts!: ChatCost[]; // Added relationship
 
     @CreateDateColumn()
     createdAt!: Date;
