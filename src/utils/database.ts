@@ -57,7 +57,7 @@ export default function database() {
       const isValid = DataSchema.safeParse(dataToSave);
 
       if (!isValid.success) {
-        throw new Error("Data validation failed: " + JSON.stringify(isValid.error.errors));
+        throw new Error("Data validation failed: " + JSON.stringify(isValid.error.issues));
       }
 
       mapData.set("summary", dataToSave.summary || "");

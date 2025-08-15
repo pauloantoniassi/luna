@@ -155,13 +155,11 @@ export class ChatContextService {
           .filter(msg => msg.body.trim() !== ""); // Filter out empty messages
 
           // 3. Call the LLM for summarization
-          const { response } = await this.llmService.generateChatHistorySummary(
+          const response = await this.llmService.generateChatHistorySummary(
             chat,
             formattedMessages,
             lastSummary ? { summary: lastSummary.summary, timestamp: lastSummary.createdAt.toISOString() } : undefined
           );
-
-          // TODO: Save summary cost to the database
 
           if (!response || !response.summary) {
               appLogger.warn(`Resumo não gerado para o chat ${chat.waChatId}.`);

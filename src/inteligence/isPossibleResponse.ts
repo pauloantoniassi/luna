@@ -78,6 +78,7 @@ export default async function isPossibleResponse(data: Data, messages: Message) 
 
     const { response: parsedResponse } = await LlmService.getInstance().callText(inputMessages, responseSchema, AI_MODELS.WEAK);
 
+    // @ts-ignore
     if (!("possible" in parsedResponse)) {
       throw new Error("Resposta não contém possible");
     }

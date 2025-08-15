@@ -3,7 +3,7 @@ import {
   ChatModel,
   ResponseFormatJSONSchema,
   ChatCompletionMessageParam,
-  CompletionUsage
+  CompletionUsage, ChatCompletion
 } from "openai/resources";
 import {Chat} from "../entities/Chat";
 import {getPrompt} from "../prompts/getPrompt";
@@ -11,16 +11,20 @@ import { SUMMARY_PROMPT } from "../prompts/SUMMARY_PROMPT";
 import PERSONALITY_PROMPT from "../constants/PERSONALITY_PROMPT";
 import {AISummaryType, AISummaryZod} from "../models/ai-summary.dto";
 import {z} from "zod";
+import {CostService} from "./cost.service";
 
 export enum AI_MODELS {
   DEFAULT = "DEFAULT",
   WEAK = "WEAK",
 }
 
-export type LlmResponseType<ResponseType> = { response: ResponseType | null, usage?: CompletionUsage }
+export type LlmUsageResponseWithOpenRouterFields = CompletionUsage & { cost?: number };
+export type LlmResponseType<ResponseType> = { response: ResponseType | null, usage?: LlmUsageResponseWithOpenRouterFields }
+type OpenAPIResponseWithOpenRouterFields = ChatCompletion & { usage?: LlmUsageResponseWithOpenRouterFields };
 
 export class LlmService {
   private static openai: OpenAI;
+  private costService: CostService;
 
   constructor() {
     if (!LlmService.openai) {
@@ -33,6 +37,7 @@ export class LlmService {
         }
       });
     }
+    this.costService = new CostService();
   }
 
   static getInstance() {
@@ -46,7 +51,7 @@ export class LlmService {
     includePersona = true,
     safety_identifier?: string
   ): Promise<LlmResponseType<ResponseType>> {
-    const response = await LlmService.openai.chat.completions.create({
+    const response: OpenAPIResponseWithOpenRouterFields = await LlmService.openai.chat.completions.create({
       model,
       messages: [
         ...(includePersona ? [{
@@ -64,7 +69,11 @@ export class LlmService {
       temperature: 0.7,
       n: 1,
       safety_identifier,
-      user: safety_identifier
+      user: safety_identifier,
+      // @ts-expect-error This is a workaround for the OpenAI SDK type issue. Usage is only available for OpenRouter
+      usage: {
+        include: true
+      }
     });
 
     return {
@@ -74,10 +83,10 @@ export class LlmService {
   }
 
   public async generateChatHistorySummary(
-    chat: Pick<Chat, 'name'>,
+    chat: Chat,
     newMessages: { author: { name?: string | null, id: number }, body: string, timestamp: string }[],
     previousSummary?: { summary: string, timestamp: string }
-  ): Promise<LlmResponseType<AISummaryType>> {
+  ): Promise<AISummaryType> {
     const prompt = getPrompt(SUMMARY_PROMPT, {
       chatName: chat.name || "Unnamed Chat",
       previousSummary: previousSummary
@@ -101,6 +110,8 @@ export class LlmService {
       throw new Error("Failed to generate summary from LLM response.");
     }
 
-    return llmResult
+    await this.costService.recordLlmChatUsage(chat, "summary", llmResult.usage);
+
+    return llmResult.response
   }
 }

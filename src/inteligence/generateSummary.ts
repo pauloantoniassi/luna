@@ -1,7 +1,7 @@
 import {AI_MODELS, LlmService} from "../services/llm.service";
 import {Data} from "../utils/database";
-import SUMMARY_PROMPT from "../constants/SUMMARY_PROMPT";
 import {ChatCompletionMessageParam} from "openai/resources";
+import {SUMMARY_PROMPT} from "../prompts/SUMMARY_PROMPT";
 
 export type Message = {
   content: string;
