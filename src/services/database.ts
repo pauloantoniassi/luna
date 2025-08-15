@@ -4,6 +4,7 @@ import path from "path";
 import { Chat } from "../entities/Chat";
 import { Contact } from "../entities/Contact";
 import { Message } from "../entities/Message";
+import { ChatSummary } from "../entities/ChatSummary"; // Added import
 
 const rootDir = getProjectRootDir();
 
@@ -19,13 +20,14 @@ const rootDir = getProjectRootDir();
  */
 export const AppDataSource = new DataSource({
     type: "sqlite",
-    database: path.join(rootDir, "luna.db"),
+    database: path.join(rootDir, "user-data", "database", "luna.db"),
     synchronize: true, // ATENÇÃO: Usar apenas em desenvolvimento.
-    logging: false, // Mude para true para ver as queries SQL geradas
+    logging: false,
     entities: [
         Chat,
         Contact,
-        Message
+        Message,
+        ChatSummary
     ],
     migrations: [],
     subscribers: [],

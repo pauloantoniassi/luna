@@ -37,8 +37,7 @@
     "reflect-metadata": "^0.2.2",
     "sharp": "^0.32.6",
     "sqlite3": "^5.1.7",
-    "tiktoken": "^1.0.21",
     "typeorm": "^0.3.25",
-    "zod": "^3.25.76"
+    "zod": "^4"
   }
 }

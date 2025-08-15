@@ -1,6 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn, OneToOne } from "typeorm"; // Added OneToOne
 import { Chat } from "./Chat";
 import { Contact } from "./Contact";
+import { ChatSummary } from "./ChatSummary"; // Updated import
 
 @Entity({ name: "messages" })
 export class Message {
@@ -32,6 +33,9 @@ export class Message {
     })
     @JoinColumn({ name: 'authorId' })
     author!: Contact;
+
+    @OneToOne(() => ChatSummary, chatSummary => chatSummary.lastMessage) // Updated relationship
+    checkpoint!: ChatSummary; // Updated relationship
 
     @CreateDateColumn()
     createdAt!: Date;

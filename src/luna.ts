@@ -169,7 +169,7 @@ export default async function luna(whatsapp: Whatsapp) {
         beautifulLogger.separator("EXECUTANDO AÇÕES");
 
         for (const action of response) {
-          if (action.message) {
+          if (action.type === "message") {
             const realMessageId = messagesIds.get(action.message.reply ?? "not-is-message");
             if (action.message.reply && realMessageId) {
               const message = action.message.text;
@@ -201,7 +201,7 @@ export default async function luna(whatsapp: Whatsapp) {
                 conteúdo: message.substring(0, 50) + (message.length > 50 ? "..." : ""),
               });
             }
-          } else if (action.sticker) {
+          } else if (action.type === "sticker") {
             const stickerPath = path.join(getProjectRootDir(), "assets", "stickers", action.sticker);
             await whatsapp.sendSticker(sessionId, stickerPath);
             messages.push({
@@ -213,7 +213,7 @@ export default async function luna(whatsapp: Whatsapp) {
             beautifulLogger.actionSent("sticker", {
               arquivo: action.sticker,
             });
-          } else if (action.audio) {
+          } else if (action.type === "audio") {
             const audioPath = path.join(getProjectRootDir(), "assets", "audios", action.audio);
             await whatsapp.sendAudio(sessionId, audioPath);
             messages.push({
@@ -225,7 +225,7 @@ export default async function luna(whatsapp: Whatsapp) {
             beautifulLogger.actionSent("audio", {
               arquivo: action.audio,
             });
-          } else if (action.meme) {
+          } else if (action.type === "meme") {
             const memePath = path.join(getProjectRootDir(), "assets", "memes", action.meme);
             await whatsapp.sendImage(sessionId, memePath);
             messages.push({
@@ -237,7 +237,7 @@ export default async function luna(whatsapp: Whatsapp) {
             beautifulLogger.actionSent("meme", {
               arquivo: action.meme,
             });
-          } else if (action.poll) {
+          } else if (action.type === "poll") {
             await whatsapp.createPoll(sessionId, action.poll.question, action.poll.options);
             messages.push({
               content: `(Luna): <criou uma enquete: ${action.poll.question}>`,
@@ -249,7 +249,7 @@ export default async function luna(whatsapp: Whatsapp) {
               pergunta: action.poll.question,
               opções: action.poll.options.join(", "),
             });
-          } else if (action.location) {
+          } else if (action.type === "location") {
             messages.push({
               content: `(Luna): <enviou uma localização (${action.location.latitude}, ${action.location.longitude})>`,
               name: "Luna",
@@ -264,7 +264,7 @@ export default async function luna(whatsapp: Whatsapp) {
             beautifulLogger.actionSent("location", {
               coordenadas: `${action.location.latitude}, ${action.location.longitude}`,
             });
-          } else if (action.contact) {
+          } else if (action.type === "contact") {
             messages.push({
               content: `(Luna): <enviou um contato (${action.contact.name} (${action.contact.cell}))>`,
               name: "Luna",

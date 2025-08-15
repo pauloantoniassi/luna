@@ -2,10 +2,11 @@ node_modules
 .env*
 !.env.example
 database
-auth
 dist
 logs
 .idea
 .vscode
 .aider*
 .tasks
+*.db
+user-data

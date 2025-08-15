@@ -1,3 +1,4 @@
+import { Boom } from "@hapi/boom";
 import {
   makeWASocket,
   useMultiFileAuthState,
@@ -7,7 +8,6 @@ import {
   proto,
   WAPresence,
 } from "@whiskeysockets/baileys";
-import { Boom } from "@hapi/boom";
 import qrcode from "qrcode-terminal";
 import { appLogger, LoggerConfig } from "../utils/logger";
 import debounce from "../utils/debounce";
@@ -16,9 +16,8 @@ import path from "path";
 import getProjectRootDir from "../utils/getProjectRootDir";
 import NodeCache from "node-cache";
 import { AppDataSource } from "../services/database";
-import { Chat } from "../entities/Chat";
 import { Contact } from "../entities/Contact";
-import { Message } from "../entities/Message";
+import { ChatContextService } from "../services/chat-context.service"; // Added import
 
 export type MessageHandler = (
   sessionId: string,
@@ -40,9 +39,11 @@ export default class Whatsapp {
   private readonly authPath: string;
   private chatCache = new NodeCache({ stdTTL: CACHE_TTL_SECONDS });
   private contactCache = new NodeCache({ stdTTL: CACHE_TTL_SECONDS });
+  private chatContextService: ChatContextService;
 
   constructor() {
     this.authPath = path.join(getProjectRootDir(), "user-data/whatsapp/auth");
+    this.chatContextService = new ChatContextService();
   }
 
   async init() {
@@ -69,7 +70,7 @@ export default class Whatsapp {
           (lastDisconnect?.error as Boom)?.output?.statusCode !==
           DisconnectReason.loggedOut;
         if (shouldReconnect) {
-          this.init();
+          await this.init();
         } else {
           console.log("Desconectado. Faça login novamente.");
           fs.rmSync(this.authPath, { recursive: true, force: true });
@@ -125,68 +126,12 @@ export default class Whatsapp {
         }
 
         // --- DB & CACHE LOG ---
-        try {
-          const chatRepository = AppDataSource.getRepository(Chat);
-          const contactRepository = AppDataSource.getRepository(Contact);
-          const messageRepository = AppDataSource.getRepository(Message);
-
-          const waChatId = msg.key.remoteJid!;
-          const waAuthorId = (msg.key.fromMe ? this.sock?.user?.id : msg.key.participant) || waChatId;
-
-          // 1. Get/Find/Create Chat from cache or DB
-          let chat: Chat | null = this.chatCache.get<Chat>(waChatId) || null;
-          if (!chat) {
-            chat = await chatRepository.findOneBy({ waChatId }); // Find
-            if (!chat) { // If not found, create
-                chat = chatRepository.create({ waChatId });
-                await chatRepository.save(chat);
-            }
-            if (chat) this.chatCache.set(waChatId, chat);
-          }
-
-          // 2. Get/Find/Create Author from cache or DB
-          let author: Contact | null = this.contactCache.get<Contact>(waAuthorId) || null;
-          if (!author) {
-            author = await contactRepository.findOneBy({ waContactId: waAuthorId }); // Find
-            if (!author) { // If not found, create
-                author = contactRepository.create({
-                    waContactId: waAuthorId,
-                    pushName: msg.pushName,
-                });
-                await contactRepository.save(author);
-            }
-            if (author) this.contactCache.set(waAuthorId, author);
-          }
-
-          // Add author to chat participants list if not already there.
-          if (chat && author) {
-            await AppDataSource.createQueryBuilder()
-                .insert()
-                .into("chat_participants") // Nome da tabela de junção
-                .values({
-                    chatId: chat.id,
-                    contactId: author.id
-                })
-                .orIgnore() // Isso se traduz para ON CONFLICT DO NOTHING no SQLite
-                .execute();
-          }
-
-          // 3. Save Message
-          const messageBody = msg.message?.conversation || msg.message?.extendedTextMessage?.text || "";
-          if (msg.key.id && messageBody && chat && author) {
-            const newMessage = messageRepository.create({
-              waMessageId: msg.key.id,
-              body: messageBody,
-              fromMe: msg.key.fromMe || false,
-              timestamp: new Date(Number(msg.messageTimestamp) * 1000),
-              chat: chat,
-              author: author,
-            });
-            await messageRepository.save(newMessage);
-          }
-        } catch (dbError) {
-          appLogger.error({ error: dbError }, "Erro ao salvar mensagem no banco de dados.");
-        }
+        await this.chatContextService.saveMessageFromWA(
+            msg,
+            this.sock?.user,
+            this.chatCache,
+            this.contactCache
+        );
         // --- END DB & CACHE LOG ---
 
         // Ignore messages that are not notifications                                                                                                                                  │

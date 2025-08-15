@@ -1,12 +1,12 @@
-import { ChatCompletionMessageParam } from "openai/resources";
-import openai from "../services/openai";
+import {ChatCompletionMessageParam} from "openai/resources";
+import {LlmService} from "../services/llm.service";
 import { Data } from "../utils/database";
 import PERSONALITY_PROMPT from "../constants/PERSONALITY_PROMPT";
-import { encoding_for_model } from "tiktoken";
 import * as fs from "fs";
 import path from "path";
 import getProjectRootDir from "../utils/getProjectRootDir";
 import beautifulLogger from "../utils/beautifulLogger";
+import {AIChatResponseType, AIChatResponseZod} from "../models/ai-action.dto";
 
 export type Message = {
   content: string;
@@ -14,79 +14,6 @@ export type Message = {
   ia: boolean;
   jid: string;
 }[];
-
-export type ResponseAction = {
-  message?: {
-    reply?: string;
-    text: string;
-  };
-  sticker?: string;
-  audio?: string;
-  meme?: string;
-  poll?: {
-    question: string;
-    options: [string, string, string];
-  };
-  location?: {
-    latitude: number;
-    longitude: number;
-  };
-  contact?: {
-    name?: string;
-    cell: string;
-  };
-};
-
-type ApiResponseAction = {
-  type: "message" | "sticker" | "audio" | "poll" | "location" | "meme" | "contact";
-  message?: {
-    reply?: string;
-    text: string;
-  };
-  sticker?: string;
-  audio?: string;
-  meme?: string;
-  poll?: {
-    question: string;
-    options: [string, string, string];
-  };
-  contact?: {
-    name?: string;
-    cell: string;
-  };
-  location?: {
-    latitude: number;
-    longitude: number;
-  };
-};
-
-export type BotResponse = ResponseAction[];
-
-export type GenerateResponseResult = {
-  actions: BotResponse;
-  cost: {
-    inputTokens: number;
-    outputTokens: number;
-    totalTokens: number;
-    cost: number;
-  };
-};
-
-const GPT4_1_PRICING = {
-  input: 0.0004,
-  output: 0.0016,
-};
-
-function calculateTokens(text: string): number {
-  try {
-    const encoder = encoding_for_model("gpt-4.1-mini");
-    const tokens = encoder.encode(text);
-    encoder.free();
-    return tokens.length;
-  } catch (error) {
-    return Math.ceil(text.length / 4);
-  }
-}
 
 const stickersDir = path.join(getProjectRootDir(), "assets", "stickers");
 if (!fs.existsSync(stickersDir))
@@ -106,8 +33,15 @@ const memeOptions: string[] = fs.readdirSync(memesDir).filter((file) => file.end
 export default async function generateResponse(
   data: Data,
   messages: Message
-): Promise<GenerateResponseResult> {
+): Promise<AIChatResponseType> {
   beautifulLogger.aiGeneration("start", "Iniciando geração de resposta...");
+  const AI_MODEL = process.env.AI_MODEL;
+  // TODO: Use getConfig
+
+  if(!AI_MODEL) {
+    beautifulLogger.aiGeneration("error", "Variável de ambiente AI_MODEL não está definida");
+    throw new Error("Variável de ambiente AI_MODEL não está definida");
+  }
 
   const uniqueMessages = messages.filter((message, index, array) => {
     return !array.some(
@@ -118,7 +52,7 @@ export default async function generateResponse(
     );
   });
 
-  const messagesMaped: string = uniqueMessages
+  const messagesMapped: string = uniqueMessages
     .map((message, i) => `${i + 1} - ${message.content}`)
     .join("\n");
 
@@ -166,23 +100,14 @@ export default async function generateResponse(
     { role: "assistant", content: contextData },
     {
       role: "user",
-      content: `Conversa: \n\n${messagesMaped}`,
+      content: `Conversa: \n\n${messagesMapped}`,
     },
   ];
 
-  const inputText = inputMessages.map((msg) => msg.content).join("\n");
-  const inputTokens = calculateTokens(inputText); // TODO: Remove - use the response from openai which contains the actual token usage
-
-  beautifulLogger.aiGeneration("tokens", {
-    "tokens de entrada": inputTokens,
-    "tamanho da mensagem": inputText.length,
-  });
-
   const responseSchema = {
-    type: "json_schema" as const,
-    json_schema: {
       name: "bot_response",
       strict: false,
+    // TODO: Copy the description to Zod schema and then reuse the zod schema here
       schema: {
         type: "object",
         properties: {
@@ -202,7 +127,7 @@ export default async function generateResponse(
                   properties: {
                     reply: {
                       type: "string",
-                      description: "ID da mensagem que está sendo respondida (opcional)",
+                      description: "ID da mensagem que está sendo respondida (opcional - apenas se não estiver respondendo a mais recente)",
                     },
                     text: {
                       type: "string",
@@ -240,9 +165,9 @@ export default async function generateResponse(
                       items: {
                         type: "string",
                       },
-                      minItems: 3,
+                      minItems: 2,
                       maxItems: 3,
-                      description: "Exatamente 3 opções para a enquete",
+                      description: "2 a 3 opções para a enquete",
                     },
                   },
                   required: ["question", "options"],
@@ -271,108 +196,37 @@ export default async function generateResponse(
         },
         required: ["actions"],
         additionalProperties: false,
-      },
-    },
+      }
   };
 
   beautifulLogger.aiGeneration("processing", "Enviando requisição para OpenAI...");
 
-  const response = await openai.chat.completions.create({
-    model: "gpt-4.1-mini",
-    messages: inputMessages,
-    response_format: responseSchema,
-    temperature: 0.8,
-    max_completion_tokens: 100,
-  });
-
-  const content = response.choices[0]?.message?.content;
-
-  if (!content) {
-    beautifulLogger.aiGeneration("error", "Nenhuma resposta foi gerada pela IA");
-    throw new Error("Nenhuma resposta foi gerada pela IA");
-  }
-
-  // Calcular tokens de saída
-  const outputTokens = calculateTokens(content); // TODO: Remove - use the response from openai which contains the actual token usage
-  const totalTokens = inputTokens + outputTokens;
-
-  // Calcular custo
-  const inputCostUSD = (inputTokens / 1000) * GPT4_1_PRICING.input;
-  const outputCostUSD = (outputTokens / 1000) * GPT4_1_PRICING.output;
-  const totalCostUSD = inputCostUSD + outputCostUSD;
-  const cost = totalCostUSD;
+  const response = await LlmService.getInstance().callText(inputMessages, responseSchema)
 
   beautifulLogger.aiGeneration("cost", {
-    "tokens entrada": inputTokens,
-    "tokens saída": outputTokens,
-    "tokens total": totalTokens,
-    "custo (USD)": `$${cost.toFixed(6)}`,
+    "tokens entrada": response.usage?.prompt_tokens,
+    "tokens saída": response.usage?.completion_tokens,
+    "tokens total": response.usage?.total_tokens,
   });
 
   try {
-    const parsedResponse: { actions: ApiResponseAction[] } = JSON.parse(content);
-
-    if (!Array.isArray(parsedResponse.actions)) {
-      beautifulLogger.aiGeneration("error", "Resposta não contém array de ações válidas");
-      return {
-        actions: [],
-        cost: {
-          inputTokens,
-          outputTokens,
-          totalTokens,
-          cost,
-        },
-      };
-    }
+    const parsedResponse: AIChatResponseType = AIChatResponseZod.parse(response.response);
 
     beautifulLogger.aiGeneration("response", {
       "quantidade de ações": parsedResponse.actions.length,
       "tipos de ação": parsedResponse.actions.map((a) => a.type).join(", "),
     });
 
-    const convertedActions: BotResponse = parsedResponse.actions.map((action) => {
-      const result: ResponseAction = {};
-
-      if (action.type === "message" && action.message) {
-        result.message = action.message;
-      } else if (action.type === "sticker" && action.sticker) {
-        result.sticker = action.sticker;
-      } else if (action.type === "audio" && action.audio) {
-        result.audio = action.audio;
-      } else if (action.type === "poll" && action.poll) {
-        result.poll = action.poll;
-      } else if (action.type === "location" && action.location) {
-        result.location = action.location;
-      } else if (action.type === "meme" && action.meme) {
-        result.meme = action.meme;
-      } else if (action.type === "contact" && action.contact) {
-        result.contact = action.contact;
-      }
-
-      return result;
-    });
-
     beautifulLogger.aiGeneration("complete", {
-      "ações processadas": convertedActions.length,
+      "ações processadas": parsedResponse.actions.length,
       "pronto para enviar": "sim",
     });
 
     return {
-      actions: convertedActions,
-      cost: {
-        inputTokens,
-        outputTokens,
-        totalTokens,
-        cost,
-      },
+      actions: parsedResponse.actions
     };
   } catch (error) {
-    beautifulLogger.aiGeneration("error", {
-      erro: "Falha ao fazer parse da resposta JSON",
-      "conteúdo recebido": content.substring(0, 100) + "...",
-    });
     console.error("Erro ao fazer parse da resposta JSON:", error);
-    console.error("Conteúdo recebido:", content);
     throw new Error("Resposta da IA não está no formato JSON válido");
   }
 }

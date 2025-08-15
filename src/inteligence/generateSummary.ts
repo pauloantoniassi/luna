@@ -1,6 +1,7 @@
-import openai from "../services/openai";
-import { Data } from "../utils/database";
+import {AI_MODELS, LlmService} from "../services/llm.service";
+import {Data} from "../utils/database";
 import SUMMARY_PROMPT from "../constants/SUMMARY_PROMPT";
+import {ChatCompletionMessageParam} from "openai/resources";
 
 export type Message = {
   content: string;
@@ -30,52 +31,49 @@ export default async function generateSummary(
     .join("\n");
 
   const responseSchema = {
-    type: "json_schema" as const,
-    json_schema: {
-      name: "summary_response",
-      strict: false,
-      schema: {
-        type: "object",
-        properties: {
-          summary: {
-            type: "string",
-            description: "Resumo das conversas e eventos importantes do grupo",
-          },
-          opinions: {
-            type: "array",
-            items: {
-              type: "object",
-              properties: {
-                name: {
-                  type: "string",
-                  description: "Nome da pessoa",
-                },
-                opinion: {
-                  type: "number",
-                  minimum: 0,
-                  maximum: 100,
-                  description: "Opinião sobre a pessoa (0 a 100)",
-                },
-                jid: {
-                  type: "string",
-                  description: "ID único da pessoa",
-                },
-                traits: {
-                  type: "array",
-                  items: {
-                    type: "string",
-                  },
-                  description: "Características observadas da pessoa",
-                },
+    name: "summary_response",
+    strict: false,
+    schema: {
+      type: "object",
+      properties: {
+        summary: {
+          type: "string",
+          description: "Resumo das conversas e eventos importantes do grupo",
+        },
+        opinions: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: {
+              name: {
+                type: "string",
+                description: "Nome da pessoa",
               },
-              required: ["name", "opinion", "jid", "traits"],
-              additionalProperties: false,
+              opinion: {
+                type: "number",
+                minimum: 0,
+                maximum: 100,
+                description: "Opinião sobre a pessoa (0 a 100)",
+              },
+              jid: {
+                type: "string",
+                description: "ID único da pessoa",
+              },
+              traits: {
+                type: "array",
+                items: {
+                  type: "string",
+                },
+                description: "Características observadas da pessoa",
+              },
             },
+            required: ["name", "opinion", "jid", "traits"],
+            additionalProperties: false,
           },
         },
-        required: ["summary", "opinions"],
-        additionalProperties: false,
       },
+      required: ["summary", "opinions"],
+      additionalProperties: false,
     },
   };
 
@@ -111,36 +109,24 @@ export default async function generateSummary(
 
   const contextData = formatDataForPrompt(data);
 
-  const response = await openai.chat.completions.create({
-    model: "gpt-4.1-nano",
-    messages: [
-      { role: "system", content: SUMMARY_PROMPT },
-      {
-        role: "assistant",
-        content: `Resumo anterior (use ele como base para não perder dados.): ${data.summary}\n\nOpiniões já formadas dos usuários: ${contextData}`,
-      },
-      {
-        role: "user",
-        content: `Conversa: \n\n${messagesMaped}`,
-      },
-    ],
-    response_format: responseSchema,
-    temperature: 0.3,
-    max_completion_tokens: 1000,
-  });
-
-  const content = response.choices[0]?.message?.content;
-
-  if (!content) {
-    throw new Error("Nenhuma resposta foi gerada pela IA");
-  }
+  // TODO: Confirmar se essas roles estão corretas e fazem sentido
+  const inputMessages = [
+    { role: "system", content: SUMMARY_PROMPT },
+    {
+      role: "assistant",
+      content: `Resumo anterior (use ele como base para não perder dados.): ${data.summary}\n\nOpiniões já formadas dos usuários: ${contextData}`,
+    },
+    {
+      role: "user",
+      content: `Conversa: \n\n${messagesMaped}`,
+    },
+  ] as ChatCompletionMessageParam[];
 
   try {
-    console.log("Conteúdo do resumo recebido:", content);
 
-    const parsedResponse = JSON.parse(content);
+    const { response: parsedResponse } = await LlmService.getInstance().callText(inputMessages, responseSchema, AI_MODELS.WEAK);
 
-    if (!parsedResponse.summary || !parsedResponse.opinions) {
+    if (!parsedResponse || typeof parsedResponse !== "object" || !("summary" in parsedResponse) || !("opinions" in parsedResponse)) {
       throw new Error("Resposta não contém summary ou opinions");
     }
 
@@ -166,7 +152,6 @@ export default async function generateSummary(
     return parsedResponse as ResponseAction;
   } catch (error) {
     console.error("Erro ao fazer parse da resposta do resumo:", error);
-    console.error("Conteúdo recebido:", content);
     throw new Error("Resposta da IA para resumo não está no formato JSON válido");
   }
 }

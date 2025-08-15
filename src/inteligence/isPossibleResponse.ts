@@ -1,7 +1,8 @@
 import POSSIBLE_RESPONSE_PROMPT from "../constants/POSSIBLE_RESPONSE_PROMPT";
-import openai from "../services/openai";
+import {AI_MODELS, LlmService} from "../services/llm.service";
 import { Data } from "../utils/database";
 import { Message } from "./generateResponse";
+import {ChatCompletionMessageParam} from "openai/resources";
 
 export default async function isPossibleResponse(data: Data, messages: Message) {
   const messagesMaped: string = messages
@@ -42,54 +43,40 @@ export default async function isPossibleResponse(data: Data, messages: Message) 
   const contextData = formatDataForPrompt(data);
 
   const responseSchema = {
-    type: "json_schema" as const,
-    json_schema: {
-      name: "possible_response",
-      strict: true,
-      schema: {
-        type: "object",
-        properties: {
-          possible: {
-            type: "boolean",
-          },
-          reason: {
-            type: "string",
-            description: "Motivo pelo qual a resposta é considerada possível ou não.",
-          },
+    name: "possible_response",
+    strict: true,
+    schema: {
+      type: "object",
+      properties: {
+        possible: {
+          type: "boolean",
         },
-        required: ["possible", "reason"],
-        additionalProperties: false,
+        reason: {
+          type: "string",
+          description: "Motivo pelo qual a resposta é considerada possível ou não.",
+        },
       },
-    },
-  };
-
-  const response = await openai.chat.completions.create({
-    model: "gpt-4.1-nano",
-    messages: [
-      { role: "system", content: POSSIBLE_RESPONSE_PROMPT },
-      {
-        role: "assistant",
-        content: `Opiniões já formadas dos usuários: ${contextData}`,
-      },
-      {
-        role: "user",
-        content: `Conversa: \n\n${messagesMaped}`,
-      },
-    ],
-    response_format: responseSchema,
-    max_tokens: 30,
-  });
-
-  const content = response.choices[0]?.message?.content;
-
-  if (!content) {
-    throw new Error("Nenhuma resposta foi gerada pela IA");
+      required: ["possible", "reason"],
+      additionalProperties: false,
+    }
   }
 
-  try {
-    console.log("Conteúdo do resumo recebido:", content);
+  const inputMessages = [
+    // TODO: Confirmar se essas roles estão corretas e fazem sentido
+    { role: "system", content: POSSIBLE_RESPONSE_PROMPT },
+    {
+      role: "assistant",
+      content: `Opiniões já formadas dos usuários: ${contextData}`,
+    },
+    {
+      role: "user",
+      content: `Conversa: \n\n${messagesMaped}`,
+    },
+  ] as ChatCompletionMessageParam[];
 
-    const parsedResponse = JSON.parse(content);
+  try {
+
+    const { response: parsedResponse } = await LlmService.getInstance().callText(inputMessages, responseSchema, AI_MODELS.WEAK);
 
     if (!("possible" in parsedResponse)) {
       throw new Error("Resposta não contém possible");
@@ -98,7 +85,6 @@ export default async function isPossibleResponse(data: Data, messages: Message) 
     return parsedResponse as { possible: boolean; reason: string };
   } catch (error) {
     console.error("Erro ao fazer parse da resposta do resumo:", error);
-    console.error("Conteúdo recebido:", content);
     throw new Error("Resposta da IA para resumo não está no formato JSON válido");
   }
 }
